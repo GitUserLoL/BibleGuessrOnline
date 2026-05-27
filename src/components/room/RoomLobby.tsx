@@ -6,7 +6,7 @@ import { startRoom, leaveRoom } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
 
 interface Room { id: string; host_id: string; game_mode: string; round_duration_secs: number }
-interface Player { profile_id: string; username: string }
+interface Player { profile_id: string; username: string; profiles?: { avatar_emoji: string | null } | null }
 
 interface Props {
   room: Room;
@@ -88,8 +88,8 @@ export default function RoomLobby({ room, players, myId, isHost }: Props) {
                   exit={{ opacity: 0, height: 0 }}
                   className="flex items-center gap-3 px-4 py-3"
                 >
-                  <div className="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xs font-bold text-amber-400">
-                    {p.username[0].toUpperCase()}
+                  <div className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-lg">
+                    {p.profiles?.avatar_emoji ?? p.username[0].toUpperCase()}
                   </div>
                   <span className="text-sm text-white/80 flex-1">{p.username}</span>
                   {p.profile_id === room.host_id && (

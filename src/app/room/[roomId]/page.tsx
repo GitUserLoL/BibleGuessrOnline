@@ -22,7 +22,7 @@ export default async function RoomPage({ params }: Props) {
 
   const { data: players } = await supabase
     .from('room_players')
-    .select('*')
+    .select('*, profiles(avatar_emoji)')
     .eq('room_id', room.id)
     .order('joined_at');
 

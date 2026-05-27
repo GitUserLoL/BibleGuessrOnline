@@ -87,16 +87,6 @@ export async function submitScore(profileId: string, mode: GameMode, totalScore:
     .single();
   if (!profile || profile.is_guest) return;
 
-  // Only update if this score beats the existing high score
-  const { data: existing } = await supabase
-    .from('global_leaderboards')
-    .select('high_score')
-    .eq('profile_id', profileId)
-    .eq('game_mode', mode)
-    .single();
-
-  if (existing && existing.high_score >= totalScore) return;
-
   await supabase.from('global_leaderboards').upsert(
     { profile_id: profileId, game_mode: mode, high_score: totalScore, achieved_at: new Date().toISOString() },
     { onConflict: 'profile_id,game_mode', ignoreDuplicates: false }
@@ -146,17 +136,24 @@ function randomRoomCode(): string {
 
 export async function createRoom(
   hostId: string,
-  hostUsername: string,
+  fallbackUsername: string,
   mode: GameMode,
   durationSecs: number
 ) {
   const supabase = await createClient();
-  await ensureProfile(hostId, hostUsername);
+  await ensureProfile(hostId, fallbackUsername);
+
+  // Always use the current profile username so display name changes are reflected
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', hostId)
+    .single();
+  const displayName = profile?.username ?? fallbackUsername;
 
   const seed = Math.floor(Math.random() * 2147483647);
   let roomId = '';
 
-  // Retry until unique code found
   for (let attempt = 0; attempt < 10; attempt++) {
     const code = randomRoomCode();
     const { error } = await supabase.from('rooms').insert({
@@ -174,15 +171,15 @@ export async function createRoom(
   await supabase.from('room_players').insert({
     room_id: roomId,
     profile_id: hostId,
-    username: hostUsername,
+    username: displayName,
   });
 
   return roomId;
 }
 
-export async function joinRoom(roomId: string, profileId: string, username: string) {
+export async function joinRoom(roomId: string, profileId: string, fallbackUsername: string) {
   const supabase = await createClient();
-  await ensureProfile(profileId, username);
+  await ensureProfile(profileId, fallbackUsername);
 
   const { data: room } = await supabase
     .from('rooms')
@@ -193,8 +190,16 @@ export async function joinRoom(roomId: string, profileId: string, username: stri
   if (!room) return { error: 'Room not found' };
   if (room.status !== 'lobby') return { error: 'Game already started' };
 
+  // Use the current profile username so display name changes are reflected
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', profileId)
+    .single();
+  const displayName = profile?.username ?? fallbackUsername;
+
   await supabase.from('room_players').upsert(
-    { room_id: roomId.toUpperCase(), profile_id: profileId, username },
+    { room_id: roomId.toUpperCase(), profile_id: profileId, username: displayName },
     { onConflict: 'room_id,profile_id' }
   );
 

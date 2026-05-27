@@ -23,6 +23,7 @@ interface RoomPlayer {
   profile_id: string;
   username: string;
   total_score: number;
+  profiles?: { avatar_emoji: string | null } | null;
 }
 
 interface RoomGuess {
@@ -78,7 +79,7 @@ export default function RoomClient({
         event: '*', schema: 'public', table: 'room_players',
         filter: `room_id=eq.${room.id}`,
       }, async () => {
-        const { data } = await supabase.from('room_players').select('*').eq('room_id', room.id).order('joined_at');
+        const { data } = await supabase.from('room_players').select('*, profiles(avatar_emoji)').eq('room_id', room.id).order('joined_at');
         if (data) setPlayers(data);
       })
       .on('postgres_changes', {

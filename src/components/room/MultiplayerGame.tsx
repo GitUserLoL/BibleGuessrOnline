@@ -12,7 +12,7 @@ interface Room {
   id: string; host_id: string; game_mode: string; current_round: number;
   round_duration_secs: number; round_started_at: string | null;
 }
-interface RoomPlayer { profile_id: string; username: string; total_score: number }
+interface RoomPlayer { profile_id: string; username: string; total_score: number; profiles?: { avatar_emoji: string | null } | null }
 interface RoomGuess {
   profile_id: string; round_number: number; guess_book_name: string | null;
   guess_chapter: number | null; guess_verse: number | null; score: number;
@@ -148,6 +148,9 @@ export default function MultiplayerGame({
                 className="flex items-center gap-2"
               >
                 <div className={`w-2 h-2 rounded-full flex-shrink-0 ${guessedThisRound ? 'bg-green-400' : 'bg-white/20'}`} />
+                <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-base flex-shrink-0">
+                  {p.profiles?.avatar_emoji ?? p.username[0]}
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm text-white/80 truncate">{p.username}</div>
                   <div className="text-xs text-white/30">{p.total_score.toLocaleString()} pts</div>
@@ -188,7 +191,8 @@ export default function MultiplayerGame({
                     const guess = roundGuesses.find(g => g.profile_id === p.profile_id);
                     const score = guess?.score ?? 0;
                     return (
-                      <div key={p.profile_id} className="flex items-center gap-3">
+                      <div key={p.profile_id} className="flex items-center gap-2">
+                        <div className="text-base">{p.profiles?.avatar_emoji ?? p.username[0]}</div>
                         <div className="flex-1 text-sm text-white/80 truncate">{p.username}</div>
                         {guess ? (
                           <div className="text-xs text-white/40">

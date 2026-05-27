@@ -5,7 +5,7 @@ import { getScoreColor } from '@/lib/scoring';
 import Link from 'next/link';
 import type { Verse } from '@/types';
 
-interface Player { profile_id: string; username: string; total_score: number }
+interface Player { profile_id: string; username: string; total_score: number; profiles?: { avatar_emoji: string | null } | null }
 interface Guess { profile_id: string; round_number: number; score: number }
 interface Room { game_mode: string }
 
@@ -45,12 +45,15 @@ export default function MultiplayerResults({ players, guesses, room }: Props) {
                   : 'bg-white/5 border-white/10'
               }`}
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black ${
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0 ${
                 i === 0 ? 'bg-amber-500 text-black' :
                 i === 1 ? 'bg-white/20 text-white' :
                 'bg-white/10 text-white/50'
               }`}>
                 {i + 1}
+              </div>
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-lg flex-shrink-0">
+                {p.profiles?.avatar_emoji ?? p.username[0].toUpperCase()}
               </div>
               <div className="flex-1 font-semibold text-white/90">{p.username}</div>
               <div className="font-black text-xl" style={{ color: getScoreColor(p.total_score) }}>
