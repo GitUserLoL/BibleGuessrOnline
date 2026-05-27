@@ -21,7 +21,7 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <h1 className="text-4xl font-black text-white mb-2">Leaderboard</h1>
-      <p className="text-white/40 text-sm mb-8">Top scores across all players</p>
+      <p className="text-white/40 text-sm mb-8">All-time high scores from signed-in players</p>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-8 border-b border-white/10 pb-4">
@@ -44,9 +44,10 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
       {scores.length === 0 ? (
         <div className="text-center py-16 text-white/30">
           <div className="text-4xl mb-4">🏆</div>
-          <div>No scores yet. Be the first!</div>
-          <Link href="/" className="mt-6 inline-block px-6 py-2 rounded-lg bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors">
-            Play Now
+          <div className="font-semibold text-white/50 mb-1">No scores here yet</div>
+          <div className="text-sm mb-6">Play a game and sign in to be the first on the board.</div>
+          <Link href="/" className="inline-block px-6 py-2 rounded-lg bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors">
+            Play now
           </Link>
         </div>
       ) : (

@@ -20,6 +20,28 @@ export async function ensureProfile(guestId: string, username: string) {
 
 export async function submitScore(profileId: string, mode: GameMode, totalScore: number) {
   const supabase = await createClient();
+
+  // Only authenticated (non-guest) users can save to the leaderboard
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || user.id !== profileId) return;
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('is_guest')
+    .eq('id', profileId)
+    .single();
+  if (!profile || profile.is_guest) return;
+
+  // Only update if this score beats the existing high score
+  const { data: existing } = await supabase
+    .from('global_leaderboards')
+    .select('high_score')
+    .eq('profile_id', profileId)
+    .eq('game_mode', mode)
+    .single();
+
+  if (existing && existing.high_score >= totalScore) return;
+
   await supabase.from('global_leaderboards').upsert(
     { profile_id: profileId, game_mode: mode, high_score: totalScore, achieved_at: new Date().toISOString() },
     { onConflict: 'profile_id,game_mode', ignoreDuplicates: false }

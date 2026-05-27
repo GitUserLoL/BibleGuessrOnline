@@ -59,7 +59,7 @@ export default function Home() {
           <span className="text-amber-400">Guessr</span>
         </h1>
         <p className="text-lg md:text-xl text-white/50 max-w-md mx-auto leading-relaxed">
-          A verse appears. You guess where it lives in scripture.
+          A verse appears. Guess which book, chapter, and verse it's from.
           <br />
           How well do you know the Word?
         </p>
