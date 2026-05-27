@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-50 bg-[#080c18]/80">
             <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-2 group">
-                <span className="text-amber-400 text-xl">✝</span>
+                <span className="text-amber-400 text-xl hidden md:inline">✝</span>
                 <span className="font-black text-lg tracking-tight text-white group-hover:text-amber-300 transition-colors">
                   BibleGuessr
                 </span>
