@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
+import AuthButton from '@/components/auth/AuthButton';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
@@ -25,9 +26,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </span>
               </Link>
               <nav className="flex items-center gap-4 text-sm text-white/50">
-                <Link href="/leaderboard" className="hover:text-white transition-colors">
+                <Link href="/multiplayer" className="hover:text-white transition-colors hidden sm:block">
+                  Multiplayer
+                </Link>
+                <Link href="/leaderboard" className="hover:text-white transition-colors hidden sm:block">
                   Leaderboard
                 </Link>
+                <AuthButton />
               </nav>
             </div>
           </header>
