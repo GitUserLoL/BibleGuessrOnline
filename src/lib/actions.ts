@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import { getVersesByMode, getBibleMeta } from '@/lib/bible';
+import { getVersesByMode, getBibleMeta, getModeVerseCount } from '@/lib/bible';
 import { generateSeededIndices } from '@/lib/prng';
 import { calculateScore } from '@/lib/scoring';
 import type { GameMode } from '@/types';
@@ -245,7 +245,8 @@ export async function submitRoomGuess(
   for (let c = 0; c < guessChapter - 1; c++) guessGlobalIndex += book.chapterVerseCounts[c];
   guessGlobalIndex += guessVerse - 1;
 
-  const score = calculateScore(correctVerse.index, guessGlobalIndex);
+  const verseCount = getModeVerseCount(room.game_mode as GameMode);
+  const score = calculateScore(correctVerse.index, guessGlobalIndex, verseCount);
 
   await supabase.from('room_guesses').upsert(
     {

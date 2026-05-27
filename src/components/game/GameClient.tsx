@@ -2,8 +2,9 @@
 
 import { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { Verse, BookStructure, GameMode, RoundResult, BibleMeta } from '@/types';
+import type { Verse, GameMode, RoundResult, BibleMeta } from '@/types';
 import { calculateScore } from '@/lib/scoring';
+import { getModeStartIndexFromMeta } from '@/lib/gameModes';
 import VerseDisplay from './VerseDisplay';
 import GuessSelector from './GuessSelector';
 import ScoreReveal from './ScoreReveal';
@@ -15,6 +16,7 @@ interface Props {
   meta: BibleMeta;
   mode: GameMode;
   seed: number;
+  verseCount: number;
   challengeMatchId?: string;
 }
 
@@ -31,11 +33,10 @@ function computeGlobalIndex(meta: BibleMeta, bookId: number, chapter: number, ve
 }
 
 function getModeIndex(globalIndex: number, mode: GameMode, meta: BibleMeta): number {
-  if (mode === 'nt') return globalIndex - meta.ntStartIndex;
-  return globalIndex;
+  return globalIndex - getModeStartIndexFromMeta(mode, meta);
 }
 
-export default function GameClient({ verses, meta, mode, seed, challengeMatchId }: Props) {
+export default function GameClient({ verses, meta, mode, seed, verseCount, challengeMatchId }: Props) {
   const [currentRound, setCurrentRound] = useState(0);
   const [phase, setPhase] = useState<Phase>('guessing');
   const [results, setResults] = useState<RoundResult[]>([]);
@@ -45,7 +46,7 @@ export default function GameClient({ verses, meta, mode, seed, challengeMatchId 
       const globalIndex = computeGlobalIndex(meta, bookId, chapter, verse);
       const guessIndex = getModeIndex(globalIndex, mode, meta);
       const correctIndex = getModeIndex(verses[currentRound].index, mode, meta);
-      const score = calculateScore(correctIndex, guessIndex);
+      const score = calculateScore(correctIndex, guessIndex, verseCount);
 
       const book = meta.books.find(b => b.id === bookId)!;
       const result: RoundResult = {

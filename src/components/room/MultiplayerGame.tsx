@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Verse, BibleMeta } from '@/types';
+import type { Verse, BibleMeta, GameMode } from '@/types';
 import { submitRoomGuess, advanceRound, endRoom } from '@/lib/actions';
 import { getScoreColor } from '@/lib/scoring';
 import VerseDisplay from '@/components/game/VerseDisplay';
@@ -120,7 +120,7 @@ export default function MultiplayerGame({
 
         <GuessSelector
           bibleStructure={meta.books}
-          mode={room.game_mode as 'full' | 'ot' | 'nt'}
+          mode={room.game_mode as GameMode}
           onSubmit={handleGuess}
           disabled={hasGuessed || timerExpired}
         />

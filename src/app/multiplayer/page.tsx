@@ -7,10 +7,18 @@ import { createClient } from '@/lib/supabase/client';
 import { createRoom, joinRoom } from '@/lib/actions';
 import type { GameMode } from '@/types';
 
-const MODES: { id: GameMode; abbr: string; label: string }[] = [
-  { id: 'full', abbr: 'ALL', label: 'Full Bible' },
-  { id: 'ot',   abbr: 'OT',  label: 'Old Testament' },
-  { id: 'nt',   abbr: 'NT',  label: 'New Testament' },
+const MODES: { id: GameMode; abbr: string; label: string; section: string }[] = [
+  { id: 'full',            abbr: 'ALL',  label: 'Full Bible',      section: 'Main'  },
+  { id: 'ot',              abbr: 'OT',   label: 'Old Testament',   section: 'Main'  },
+  { id: 'nt',              abbr: 'NT',   label: 'New Testament',   section: 'Main'  },
+  { id: 'law',             abbr: 'LAW',  label: 'The Law',         section: 'OT'    },
+  { id: 'history',         abbr: 'HIST', label: 'History',         section: 'OT'    },
+  { id: 'major-prophets',  abbr: 'MAJ',  label: 'Major Prophets',  section: 'OT'    },
+  { id: 'minor-prophets',  abbr: 'MIN',  label: 'Minor Prophets',  section: 'OT'    },
+  { id: 'gospels',         abbr: 'GOSP', label: 'Gospels',         section: 'NT'    },
+  { id: 'acts',            abbr: 'ACTS', label: 'Acts',            section: 'NT'    },
+  { id: 'letters',         abbr: 'LTRS', label: 'Letters',         section: 'NT'    },
+  { id: 'revelation',      abbr: 'REV',  label: 'Prophecy',        section: 'NT'    },
 ];
 
 function getPlayerId(): string {
@@ -121,21 +129,61 @@ export default function MultiplayerPage() {
             {/* Mode */}
             <div>
               <div className="text-xs text-white/35 uppercase tracking-widest mb-3">Game Mode</div>
-              <div className="grid grid-cols-3 gap-2">
-                {MODES.map(m => (
-                  <button
-                    key={m.id}
-                    onClick={() => setMode(m.id)}
-                    className={`py-3 rounded-xl border transition-all flex flex-col items-center gap-1 ${
-                      mode === m.id
-                        ? 'bg-[#c9a644]/15 border-[#c9a644]/40 text-[#c9a644]'
-                        : 'bg-white/[0.03] border-white/8 text-white/40 hover:bg-white/8 hover:text-white/70'
-                    }`}
-                  >
-                    <span className="text-[11px] font-black tracking-widest">{m.abbr}</span>
-                    <span className="text-[10px] text-current opacity-70">{m.label}</span>
-                  </button>
-                ))}
+              <div className="flex flex-col gap-3">
+                {/* Main modes */}
+                <div className="grid grid-cols-3 gap-2">
+                  {MODES.filter(m => m.section === 'Main').map(m => (
+                    <button
+                      key={m.id}
+                      onClick={() => setMode(m.id)}
+                      className={`py-3 rounded-xl border transition-all flex flex-col items-center gap-1 ${
+                        mode === m.id
+                          ? 'bg-[#c9a644]/15 border-[#c9a644]/40 text-[#c9a644]'
+                          : 'bg-white/[0.03] border-white/8 text-white/40 hover:bg-white/8 hover:text-white/70'
+                      }`}
+                    >
+                      <span className="text-[11px] font-black tracking-widest">{m.abbr}</span>
+                      <span className="text-[10px] text-current opacity-70">{m.label}</span>
+                    </button>
+                  ))}
+                </div>
+                {/* Category modes */}
+                <div className="border-t border-white/6 pt-3">
+                  <div className="text-[9px] font-bold tracking-[0.18em] text-white/20 uppercase mb-2">OT Categories</div>
+                  <div className="grid grid-cols-4 gap-1.5 mb-3">
+                    {MODES.filter(m => m.section === 'OT').map(m => (
+                      <button
+                        key={m.id}
+                        onClick={() => setMode(m.id)}
+                        className={`py-2.5 rounded-lg border transition-all flex flex-col items-center gap-0.5 ${
+                          mode === m.id
+                            ? 'bg-[#c9a644]/15 border-[#c9a644]/40 text-[#c9a644]'
+                            : 'bg-white/[0.03] border-white/6 text-white/35 hover:bg-white/8 hover:text-white/60'
+                        }`}
+                      >
+                        <span className="text-[10px] font-black tracking-wider">{m.abbr}</span>
+                        <span className="text-[9px] text-current opacity-70 leading-tight text-center px-0.5">{m.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="text-[9px] font-bold tracking-[0.18em] text-white/20 uppercase mb-2">NT Categories</div>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {MODES.filter(m => m.section === 'NT').map(m => (
+                      <button
+                        key={m.id}
+                        onClick={() => setMode(m.id)}
+                        className={`py-2.5 rounded-lg border transition-all flex flex-col items-center gap-0.5 ${
+                          mode === m.id
+                            ? 'bg-[#c9a644]/15 border-[#c9a644]/40 text-[#c9a644]'
+                            : 'bg-white/[0.03] border-white/6 text-white/35 hover:bg-white/8 hover:text-white/60'
+                        }`}
+                      >
+                        <span className="text-[10px] font-black tracking-wider">{m.abbr}</span>
+                        <span className="text-[9px] text-current opacity-70 leading-tight text-center px-0.5">{m.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -2,6 +2,7 @@ import 'server-only';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { Verse, BookStructure, BibleMeta, GameMode } from '@/types';
+import { getModeBookRange } from '@/lib/gameModes';
 
 interface RawVerse {
   book_name: string;
@@ -73,9 +74,8 @@ function getData(): BibleData {
 
 export function getVersesByMode(mode: GameMode): Verse[] {
   const { verses } = getData();
-  if (mode === 'full') return verses;
-  if (mode === 'ot') return verses.filter(v => v.book <= 39);
-  return verses.filter(v => v.book >= 40);
+  const [min, max] = getModeBookRange(mode);
+  return verses.filter(v => v.book >= min && v.book <= max);
 }
 
 export function getBibleMeta(): BibleMeta {
@@ -83,8 +83,5 @@ export function getBibleMeta(): BibleMeta {
 }
 
 export function getModeVerseCount(mode: GameMode): number {
-  const { meta } = getData();
-  if (mode === 'full') return meta.otVerseCount + meta.ntVerseCount;
-  if (mode === 'ot') return meta.otVerseCount;
-  return meta.ntVerseCount;
+  return getVersesByMode(mode).length;
 }

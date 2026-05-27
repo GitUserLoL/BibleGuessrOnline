@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BookStructure, GameMode } from '@/types';
+import { filterBooksByMode } from '@/lib/gameModes';
 
 type Step = 'book' | 'chapter' | 'verse';
 
@@ -19,9 +20,7 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [activeStep, setActiveStep] = useState<Step>('book');
 
-  const availableBooks = bibleStructure.filter(b =>
-    mode === 'full' ? true : mode === 'ot' ? b.testament === 'OT' : b.testament === 'NT'
-  );
+  const availableBooks = filterBooksByMode(mode, bibleStructure);
   const otBooks = availableBooks.filter(b => b.testament === 'OT');
   const ntBooks = availableBooks.filter(b => b.testament === 'NT');
 
@@ -64,7 +63,7 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
     <>
       {otBooks.length > 0 && (
         <>
-          {mode === 'full' && (
+          {(mode === 'full') && (
             <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#c9a644]/60 uppercase sticky top-0 bg-[#181411]/95 backdrop-blur-sm">
               Old Testament
             </div>

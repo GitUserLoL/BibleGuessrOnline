@@ -1,4 +1,7 @@
-export type GameMode = 'full' | 'ot' | 'nt';
+export type GameMode =
+  | 'full' | 'ot' | 'nt'
+  | 'law' | 'history' | 'major-prophets' | 'minor-prophets'
+  | 'gospels' | 'acts' | 'letters' | 'revelation';
 
 export interface Verse {
   book_name: string;

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { getVersesByMode, getBibleMeta } from '@/lib/bible';
+import { getVersesByMode, getBibleMeta, getModeVerseCount } from '@/lib/bible';
 import { generateSeededIndices } from '@/lib/prng';
 import type { GameMode, AsyncMatch } from '@/types';
 import GameClient from '@/components/game/GameClient';
@@ -27,6 +27,7 @@ export default async function ChallengePage({ params }: Props) {
   const indices = generateSeededIndices(typedMatch.seed, 5, modeVerses.length);
   const verses = indices.map(i => modeVerses[i]);
   const meta = getBibleMeta();
+  const verseCount = getModeVerseCount(typedMatch.game_mode);
 
   const { data: scores } = await supabase
     .from('async_scores')
@@ -37,11 +38,9 @@ export default async function ChallengePage({ params }: Props) {
   return (
     <div className="min-h-[calc(100vh-56px)] flex flex-col">
       {/* Challenge banner */}
-      <div className="border-b border-amber-500/20 bg-amber-500/5 py-3 px-4 text-center">
-        <span className="text-amber-400 font-semibold text-sm">⚔️ Challenge Match</span>
-        <span className="text-white/40 text-xs ml-2">
-          {typedMatch.game_mode === 'full' ? 'Full Bible' : typedMatch.game_mode === 'ot' ? 'Old Testament' : 'New Testament'}
-        </span>
+      <div className="border-b border-[#c9a644]/20 bg-[#c9a644]/5 py-3 px-4 text-center">
+        <span className="text-[#c9a644] font-semibold text-sm">Challenge Match</span>
+        <span className="text-white/40 text-xs ml-2">{typedMatch.game_mode}</span>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 p-4 max-w-6xl mx-auto w-full">
@@ -51,6 +50,7 @@ export default async function ChallengePage({ params }: Props) {
             meta={meta}
             mode={typedMatch.game_mode}
             seed={typedMatch.seed}
+            verseCount={verseCount}
             challengeMatchId={matchId}
           />
         </div>
