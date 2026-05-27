@@ -48,7 +48,11 @@ export default function MultiplayerGame({
   const duration = room.round_duration_secs;
 
   const remaining = useTimer(room.round_started_at, duration);
-  const timerExpired = remaining <= 0;
+  // Compute from server timestamp directly — avoids a one-render lag where `remaining`
+  // is still 0 after round_started_at resets, which caused the overlay to re-trigger
+  // immediately at the start of the next round.
+  const timerExpired = room.round_started_at !== null &&
+    (Date.now() - new Date(room.round_started_at).getTime()) / 1000 >= duration;
 
   const roundGuesses = guesses.filter(g => g.round_number === round);
   const myGuessThisRound = roundGuesses.find(g => g.profile_id === myId);
@@ -73,7 +77,7 @@ export default function MultiplayerGame({
         advancedRef.current = true;
         advanceRound(room.id, round);
       }
-    }, 4000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, [timerExpired, room.id, round]);
 
