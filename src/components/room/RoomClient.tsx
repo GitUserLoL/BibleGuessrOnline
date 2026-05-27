@@ -63,6 +63,16 @@ export default function RoomClient({
     }
   }, [myId]);
 
+  // When room resets to lobby (play again), reload so server recomputes verses from new seed
+  const prevStatus = useRef<string | null>(null);
+  useEffect(() => {
+    const prev = prevStatus.current;
+    prevStatus.current = room.status;
+    if ((prev === 'playing' || prev === 'finished') && room.status === 'lobby') {
+      window.location.reload();
+    }
+  }, [room.status]);
+
   const channelRef = useRef<ReturnType<typeof createClient>['channel'] extends (...args: infer A) => infer R ? R : never | null>(null);
 
   useEffect(() => {
@@ -105,7 +115,7 @@ export default function RoomClient({
   }
 
   if (room.status === 'finished') {
-    return <MultiplayerResults players={players} guesses={guesses} verses={verses} room={room} />;
+    return <MultiplayerResults players={players} guesses={guesses} verses={verses} room={room} myId={myId} />;
   }
 
   return (

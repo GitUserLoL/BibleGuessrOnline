@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Verse, BibleMeta } from '@/types';
-import { submitRoomGuess, advanceRound } from '@/lib/actions';
+import { submitRoomGuess, advanceRound, endRoom } from '@/lib/actions';
 import { getScoreColor } from '@/lib/scoring';
 import VerseDisplay from '@/components/game/VerseDisplay';
 import GuessSelector from '@/components/game/GuessSelector';
@@ -54,18 +54,20 @@ export default function MultiplayerGame({
   const myGuessThisRound = roundGuesses.find(g => g.profile_id === myId);
   const hasGuessed = !!myGuessThisRound;
 
-  // Between-round results overlay (shown for 4s after timer expires)
-  const [showResults, setShowResults] = useState(false);
+  // Track which round triggered the overlay — prevents re-showing when round increments
+  // (timer hook state lags one render after round_started_at resets, so timerExpired
+  // briefly stays true even after round advances; comparing to current round avoids that)
+  const [resultsForRound, setResultsForRound] = useState<number | null>(null);
+  const showResults = resultsForRound === round;
   const advancedRef = useRef(false);
 
   useEffect(() => {
     advancedRef.current = false;
-    setShowResults(false);
   }, [round]);
 
   useEffect(() => {
     if (!timerExpired) return;
-    setShowResults(true);
+    setResultsForRound(round);
     const timer = setTimeout(() => {
       if (!advancedRef.current) {
         advancedRef.current = true;
@@ -135,7 +137,17 @@ export default function MultiplayerGame({
 
       {/* Player sidebar */}
       <div className="lg:w-60 border-t lg:border-t-0 lg:border-l border-white/10 p-4 flex flex-col gap-3">
-        <div className="text-xs text-white/40 uppercase tracking-widest font-semibold mb-1">Players</div>
+        <div className="flex items-center justify-between mb-1">
+          <div className="text-xs text-white/40 uppercase tracking-widest font-semibold">Players</div>
+          {isHost && (
+            <button
+              onClick={() => endRoom(room.id)}
+              className="text-[10px] text-red-400/50 hover:text-red-400 transition-colors"
+            >
+              End game
+            </button>
+          )}
+        </div>
         {players
           .slice()
           .sort((a, b) => b.total_score - a.total_score)

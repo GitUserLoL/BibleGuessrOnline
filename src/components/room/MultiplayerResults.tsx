@@ -1,22 +1,33 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { getScoreColor } from '@/lib/scoring';
 import Link from 'next/link';
 import type { Verse } from '@/types';
+import { resetRoom } from '@/lib/actions';
 
 interface Player { profile_id: string; username: string; total_score: number; profiles?: { avatar_emoji: string | null } | null }
 interface Guess { profile_id: string; round_number: number; score: number }
-interface Room { game_mode: string }
+interface Room { id: string; host_id: string; game_mode: string }
 
 interface Props {
   players: Player[];
   guesses: Guess[];
   verses: Verse[];
   room: Room;
+  myId: string;
 }
 
-export default function MultiplayerResults({ players, guesses, room }: Props) {
+export default function MultiplayerResults({ players, guesses, room, myId }: Props) {
+  const [resetting, setResetting] = useState(false);
+  const isHost = myId === room.host_id;
+
+  async function handlePlayAgain() {
+    setResetting(true);
+    await resetRoom(room.id);
+    // RoomClient detects status → 'lobby' and reloads the page for all clients
+  }
   const sorted = [...players].sort((a, b) => b.total_score - a.total_score);
   const modeLabel = room.game_mode === 'full' ? 'Full Bible' : room.game_mode === 'ot' ? 'Old Testament' : 'New Testament';
 
@@ -70,13 +81,26 @@ export default function MultiplayerResults({ players, guesses, room }: Props) {
           >
             New Room
           </Link>
-          <Link
-            href="/"
-            className="flex-1 py-3 rounded-xl text-center bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors"
-          >
-            Play Solo
-          </Link>
+          {isHost ? (
+            <button
+              onClick={handlePlayAgain}
+              disabled={resetting}
+              className="flex-1 py-3 rounded-xl bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors disabled:opacity-50"
+            >
+              {resetting ? 'Resetting…' : 'Play Again'}
+            </button>
+          ) : (
+            <Link
+              href="/"
+              className="flex-1 py-3 rounded-xl text-center bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors"
+            >
+              Play Solo
+            </Link>
+          )}
         </div>
+        {!isHost && (
+          <p className="text-center text-white/25 text-xs -mt-2">Waiting for host to start a new game…</p>
+        )}
       </motion.div>
     </div>
   );

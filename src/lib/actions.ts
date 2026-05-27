@@ -314,10 +314,56 @@ export async function advanceRound(roomId: string, fromRound: number) {
   }
 }
 
+export async function endRoom(roomId: string) {
+  const supabase = await createClient();
+  await supabase.from('rooms').update({ status: 'finished' }).eq('id', roomId);
+}
+
+export async function resetRoom(roomId: string) {
+  const supabase = await createClient();
+  const seed = Math.floor(Math.random() * 2147483647);
+  await supabase.from('room_guesses').delete().eq('room_id', roomId);
+  await supabase.from('room_players').update({ total_score: 0 }).eq('room_id', roomId);
+  await supabase.from('rooms').update({
+    status: 'lobby',
+    current_round: 1,
+    round_started_at: null,
+    seed,
+  }).eq('id', roomId);
+}
+
 export async function leaveRoom(roomId: string, profileId: string) {
   const supabase = await createClient();
+
+  const { data: room } = await supabase
+    .from('rooms')
+    .select('host_id, status')
+    .eq('id', roomId)
+    .single();
+
   await supabase.from('room_players')
     .delete()
     .eq('room_id', roomId)
     .eq('profile_id', profileId);
+
+  if (!room) return;
+
+  if (room.host_id === profileId) {
+    if (room.status === 'lobby') {
+      const { data: remaining } = await supabase
+        .from('room_players')
+        .select('profile_id')
+        .eq('room_id', roomId)
+        .order('joined_at')
+        .limit(1);
+
+      if (remaining && remaining.length > 0) {
+        await supabase.from('rooms').update({ host_id: remaining[0].profile_id }).eq('id', roomId);
+      } else {
+        await supabase.from('rooms').delete().eq('id', roomId);
+      }
+    } else if (room.status === 'playing') {
+      await supabase.from('rooms').update({ status: 'finished' }).eq('id', roomId);
+    }
+  }
 }
