@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { updateProfile } from '@/lib/actions';
-import { useRouter } from 'next/navigation';
 
 const EMOJI_OPTIONS = [
   '✝️','🙏','📖','✡️','🕊️','⭐','🌟','💫',
@@ -20,17 +19,20 @@ interface Props {
   nameChangesUsed: number;
 }
 
-export default function ProfileClient({ userId, initialUsername, initialEmoji, nameChangesUsed }: Props) {
+export default function ProfileClient({ userId, initialUsername, initialEmoji, nameChangesUsed: initialChangesUsed }: Props) {
+  // "saved" tracks what's in the DB; "username"/"emoji" track the current form values
+  const [savedUsername, setSavedUsername] = useState(initialUsername);
+  const [savedEmoji, setSavedEmoji] = useState(initialEmoji);
   const [username, setUsername] = useState(initialUsername);
   const [emoji, setEmoji] = useState(initialEmoji);
+  const [changesUsed, setChangesUsed] = useState(initialChangesUsed);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const router = useRouter();
 
-  const changesLeft = 5 - nameChangesUsed;
-  const usernameChanged = username.trim() !== initialUsername;
-  const emojiChanged = emoji !== initialEmoji;
+  const changesLeft = 5 - changesUsed;
+  const usernameChanged = username.trim() !== savedUsername;
+  const emojiChanged = emoji !== savedEmoji;
   const hasChanges = usernameChanged || emojiChanged;
 
   async function handleSave() {
@@ -48,11 +50,27 @@ export default function ProfileClient({ userId, initialUsername, initialEmoji, n
     setSaving(false);
     if (result.error) {
       setError(result.error);
-    } else {
-      setSuccess(true);
-      router.refresh();
-      setTimeout(() => setSuccess(false), 3000);
+      return;
     }
+
+    // Update saved baseline so the form correctly detects future changes
+    if (usernameChanged) {
+      setSavedUsername(username.trim());
+      setChangesUsed(u => u + 1);
+    }
+    if (emojiChanged) {
+      setSavedEmoji(emoji);
+    }
+
+    // Tell AuthButton (and anyone else) to refresh profile display
+    window.dispatchEvent(
+      new CustomEvent('profileUpdated', {
+        detail: { username: usernameChanged ? username.trim() : savedUsername, emoji },
+      })
+    );
+
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 3000);
   }
 
   return (
@@ -118,20 +136,12 @@ export default function ProfileClient({ userId, initialUsername, initialEmoji, n
 
       {/* Feedback */}
       {error && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-red-400 text-sm mb-4"
-        >
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm mb-4">
           {error}
         </motion.p>
       )}
       {success && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-amber-400 text-sm mb-4"
-        >
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-amber-400 text-sm mb-4">
           ✓ Profile updated
         </motion.p>
       )}

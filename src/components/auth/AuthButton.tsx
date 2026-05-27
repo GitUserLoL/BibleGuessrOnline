@@ -34,7 +34,18 @@ export default function AuthButton() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       load(session?.user ?? null);
     });
-    return () => subscription.unsubscribe();
+
+    // Re-sync profile when user saves changes on the profile page
+    function onProfileUpdated(e: Event) {
+      const { username, emoji } = (e as CustomEvent<{ username: string; emoji: string }>).detail;
+      setProfile({ username, avatar_emoji: emoji });
+    }
+    window.addEventListener('profileUpdated', onProfileUpdated);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('profileUpdated', onProfileUpdated);
+    };
   }, []);
 
   async function signOut() {
