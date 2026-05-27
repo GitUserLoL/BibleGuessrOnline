@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import Link from 'next/link';
-import AuthButton from '@/components/auth/AuthButton';
+import NavBar from '@/components/ui/NavBar';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
@@ -17,25 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <div className="page-wrapper min-h-screen flex flex-col">
-          <header className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-50 bg-[#080c18]/80">
-            <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-              <Link href="/" className="flex items-center gap-2 group">
-                <span className="text-amber-400 text-xl hidden md:inline">✝</span>
-                <span className="font-black text-lg tracking-tight text-white group-hover:text-amber-300 transition-colors">
-                  BibleGuessr
-                </span>
-              </Link>
-              <nav className="flex items-center gap-4 text-sm text-white/50">
-                <Link href="/multiplayer" className="hover:text-white transition-colors hidden sm:block">
-                  Multiplayer
-                </Link>
-                <Link href="/leaderboard" className="hover:text-white transition-colors hidden sm:block">
-                  Leaderboard
-                </Link>
-                <AuthButton />
-              </nav>
-            </div>
-          </header>
+          <NavBar />
           <main className="flex-1">{children}</main>
         </div>
       </body>

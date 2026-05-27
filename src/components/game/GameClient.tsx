@@ -98,7 +98,19 @@ export default function GameClient({ verses, meta, mode, seed, challengeMatchId 
     <div className="w-full max-w-4xl mx-auto px-4 py-6 flex flex-col gap-6">
       {/* Header row */}
       <div className="flex items-center justify-between">
-        <RoundProgress total={verses.length} current={currentRound} scores={scores} />
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => { window.location.href = '/'; }}
+            className="flex items-center gap-1 text-white/25 hover:text-white/60 transition-colors text-xs"
+            title="Back to home"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span className="hidden sm:inline">Home</span>
+          </button>
+          <RoundProgress total={verses.length} current={currentRound} scores={scores} />
+        </div>
         <div className="text-right">
           <div className="text-xs text-white/40 uppercase tracking-widest">Score</div>
           <motion.div

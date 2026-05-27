@@ -5,26 +5,26 @@ import { useRouter } from 'next/navigation';
 import type { GameMode } from '@/types';
 import { generateGameSeed } from '@/lib/prng';
 
-const MODES: { id: GameMode; label: string; desc: string; icon: string; books: string }[] = [
+const MODES: { id: GameMode; abbr: string; label: string; desc: string; books: string }[] = [
   {
     id: 'full',
+    abbr: 'ALL',
     label: 'Full Bible',
-    desc: 'All 66 books, 31,102 verses',
-    icon: '📖',
+    desc: '66 books · 31,102 verses',
     books: 'Genesis → Revelation',
   },
   {
     id: 'ot',
+    abbr: 'OT',
     label: 'Old Testament',
-    desc: '39 books, ~23,000 verses',
-    icon: '🕎',
+    desc: '39 books · ~23,000 verses',
     books: 'Genesis → Malachi',
   },
   {
     id: 'nt',
+    abbr: 'NT',
     label: 'New Testament',
-    desc: '27 books, ~7,900 verses',
-    icon: '✝️',
+    desc: '27 books · ~7,900 verses',
     books: 'Matthew → Revelation',
   },
 ];
@@ -41,54 +41,52 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-56px)] px-4 py-16">
       {/* Hero */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-16"
+        transition={{ duration: 0.5 }}
+        className="text-center mb-14"
       >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
-          className="text-6xl mb-6"
-        >
-          ✝
-        </motion.div>
         <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white mb-4">
-          Bible
-          <span className="text-amber-400">Guessr</span>
+          Bible<span className="text-amber-400">Guessr</span>
         </h1>
-        <p className="text-lg md:text-xl text-white/50 max-w-md mx-auto leading-relaxed">
-          A verse appears. Guess which book, chapter, and verse it's from.
+        <p className="text-base md:text-lg text-white/50 max-w-sm mx-auto leading-relaxed">
+          A verse appears. Guess which book, chapter, and verse it&apos;s from.
           <br />
           How well do you know the Word?
         </p>
       </motion.div>
 
       {/* Mode cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-3xl mb-10">
         {MODES.map((m, i) => (
           <motion.button
             key={m.id}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 + i * 0.1 }}
-            whileHover={{ y: -4, scale: 1.02 }}
+            transition={{ delay: 0.15 + i * 0.08 }}
+            whileHover={{ y: -3, scale: 1.015 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => startGame(m.id)}
-            className="group relative flex flex-col items-start gap-3 p-6 rounded-2xl border border-white/10 bg-white/5 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all duration-200 text-left cursor-pointer"
+            className="group relative flex flex-col gap-3 p-5 rounded-xl border border-white/10 bg-white/[0.03] hover:border-amber-500/30 hover:bg-amber-500/[0.04] transition-all duration-200 text-left cursor-pointer"
           >
-            <div className="text-3xl">{m.icon}</div>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-amber-400/50 tracking-[0.15em] uppercase">
+                {m.abbr}
+              </span>
+              <svg
+                className="w-4 h-4 text-white/20 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all duration-200"
+                fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
             <div>
-              <div className="font-bold text-lg text-white group-hover:text-amber-300 transition-colors">
+              <div className="font-bold text-base text-white group-hover:text-amber-300 transition-colors">
                 {m.label}
               </div>
-              <div className="text-sm text-white/40 mt-0.5">{m.desc}</div>
+              <div className="text-xs text-white/35 mt-0.5">{m.desc}</div>
             </div>
-            <div className="text-xs text-white/25 font-mono">{m.books}</div>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 group-hover:text-amber-400 group-hover:translate-x-1 transition-all duration-200 text-xl">
-              →
-            </div>
+            <div className="text-[11px] text-white/20 font-mono">{m.books}</div>
           </motion.button>
         ))}
       </div>
@@ -97,10 +95,10 @@ export default function Home() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="text-center text-white/25 text-sm max-w-sm"
+        transition={{ delay: 0.5 }}
+        className="text-center text-white/25 text-xs tracking-wide"
       >
-        5 rounds · up to 5,000 points per round · 25,000 max score
+        5 rounds &middot; up to 5,000 pts per round &middot; 25,000 max
       </motion.div>
     </div>
   );
