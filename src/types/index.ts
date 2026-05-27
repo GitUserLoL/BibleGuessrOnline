@@ -30,7 +30,8 @@ export interface RoundResult {
   guessBookName: string;
   guessChapter: number;
   guessVerse: number;
-  guessIndex: number;
+  guessIndex: number;   // mode-relative
+  correctIndex: number; // mode-relative
   score: number;
 }
 

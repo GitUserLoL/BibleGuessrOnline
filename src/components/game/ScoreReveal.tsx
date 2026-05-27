@@ -34,7 +34,7 @@ export default function ScoreReveal({ result, onNext, isLast }: Props) {
     return () => clearInterval(timer);
   }, [result.score]);
 
-  const distance = Math.abs(result.verse.index - result.guessIndex);
+  const distance = Math.abs(result.correctIndex - result.guessIndex);
 
   return (
     <motion.div

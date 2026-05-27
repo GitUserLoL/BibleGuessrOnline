@@ -55,6 +55,7 @@ export default function GameClient({ verses, meta, mode, seed, challengeMatchId 
         guessChapter: chapter,
         guessVerse: verse,
         guessIndex,
+        correctIndex,
         score,
       };
 
