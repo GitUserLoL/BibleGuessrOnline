@@ -7,10 +7,10 @@ import { createClient } from '@/lib/supabase/client';
 import { createRoom, joinRoom } from '@/lib/actions';
 import type { GameMode } from '@/types';
 
-const MODES: { id: GameMode; label: string; icon: string }[] = [
-  { id: 'full', label: 'Full Bible', icon: '📖' },
-  { id: 'ot', label: 'Old Testament', icon: '🕎' },
-  { id: 'nt', label: 'New Testament', icon: '✝️' },
+const MODES: { id: GameMode; abbr: string; label: string }[] = [
+  { id: 'full', abbr: 'ALL', label: 'Full Bible' },
+  { id: 'ot',   abbr: 'OT',  label: 'Old Testament' },
+  { id: 'nt',   abbr: 'NT',  label: 'New Testament' },
 ];
 
 function getPlayerId(): string {
@@ -58,7 +58,7 @@ export default function MultiplayerPage() {
 
       const roomId = await createRoom(playerId, playerName, mode, duration);
       router.push(`/room/${roomId}`);
-    } catch (e) {
+    } catch {
       setError('Failed to create room. Please try again.');
     } finally {
       setLoading(false);
@@ -96,19 +96,19 @@ export default function MultiplayerPage() {
         className="w-full max-w-md"
       >
         <h1 className="text-3xl font-black text-white mb-1">Multiplayer</h1>
-        <p className="text-white/40 text-sm mb-8">
+        <p className="text-white/35 text-sm mb-8">
           Play live against friends in real-time.
-          {username && <span className="text-amber-400"> Playing as: {username}</span>}
+          {username && <span className="text-[#c9a644]/80"> Playing as {username}</span>}
         </p>
 
         {/* Tabs */}
-        <div className="flex gap-1 p-1 bg-white/5 rounded-xl border border-white/10 mb-6">
+        <div className="flex gap-1 p-1 bg-white/[0.04] rounded-xl border border-white/8 mb-6">
           {(['create', 'join'] as const).map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${
-                tab === t ? 'bg-white/15 text-white' : 'text-white/40 hover:text-white/70'
+                tab === t ? 'bg-white/12 text-white' : 'text-white/35 hover:text-white/60'
               }`}
             >
               {t === 'create' ? 'Create Room' : 'Join Room'}
@@ -120,20 +120,20 @@ export default function MultiplayerPage() {
           <div className="flex flex-col gap-5">
             {/* Mode */}
             <div>
-              <div className="text-xs text-white/40 uppercase tracking-widest mb-3">Game Mode</div>
+              <div className="text-xs text-white/35 uppercase tracking-widest mb-3">Game Mode</div>
               <div className="grid grid-cols-3 gap-2">
                 {MODES.map(m => (
                   <button
                     key={m.id}
                     onClick={() => setMode(m.id)}
-                    className={`py-3 rounded-xl text-sm font-semibold border transition-all ${
+                    className={`py-3 rounded-xl border transition-all flex flex-col items-center gap-1 ${
                       mode === m.id
-                        ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
-                        : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10'
+                        ? 'bg-[#c9a644]/15 border-[#c9a644]/40 text-[#c9a644]'
+                        : 'bg-white/[0.03] border-white/8 text-white/40 hover:bg-white/8 hover:text-white/70'
                     }`}
                   >
-                    <div>{m.icon}</div>
-                    <div className="text-xs mt-1">{m.label}</div>
+                    <span className="text-[11px] font-black tracking-widest">{m.abbr}</span>
+                    <span className="text-[10px] text-current opacity-70">{m.label}</span>
                   </button>
                 ))}
               </div>
@@ -142,8 +142,8 @@ export default function MultiplayerPage() {
             {/* Timer */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <div className="text-xs text-white/40 uppercase tracking-widest">Round Timer</div>
-                <div className="text-amber-400 font-bold text-sm">{duration}s</div>
+                <div className="text-xs text-white/35 uppercase tracking-widest">Round Timer</div>
+                <div className="text-[#c9a644] font-bold text-sm tabular-nums">{duration}s</div>
               </div>
               <input
                 type="range"
@@ -152,19 +152,19 @@ export default function MultiplayerPage() {
                 step={5}
                 value={duration}
                 onChange={e => setDuration(Number(e.target.value))}
-                className="w-full accent-amber-500"
+                className="w-full accent-[#c9a644]"
               />
-              <div className="flex justify-between text-xs text-white/25 mt-1">
+              <div className="flex justify-between text-xs text-white/20 mt-1">
                 <span>15s</span><span>60s</span>
               </div>
             </div>
 
-            {error && <p className="text-red-400 text-sm">{error}</p>}
+            {error && <p className="text-red-400/80 text-sm">{error}</p>}
 
             <button
               onClick={handleCreate}
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-lg hover:bg-amber-400 transition-colors disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold text-base hover:bg-[#d4b860] transition-colors disabled:opacity-40"
             >
               {loading ? 'Creating…' : 'Create Room'}
             </button>
@@ -172,21 +172,21 @@ export default function MultiplayerPage() {
         ) : (
           <form onSubmit={handleJoin} className="flex flex-col gap-4">
             <div>
-              <div className="text-xs text-white/40 uppercase tracking-widest mb-3">Room Code</div>
+              <div className="text-xs text-white/35 uppercase tracking-widest mb-3">Room Code</div>
               <input
                 type="text"
                 value={joinCode}
                 onChange={e => setJoinCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
                 placeholder="ABC123"
                 maxLength={6}
-                className="w-full px-4 py-4 rounded-xl bg-white/5 border border-white/10 text-white text-2xl font-black text-center tracking-[0.3em] placeholder-white/20 focus:outline-none focus:border-amber-500/50 transition-colors uppercase"
+                className="w-full px-4 py-4 rounded-xl bg-white/[0.03] border border-white/8 text-white text-2xl font-black text-center tracking-[0.3em] placeholder-white/15 focus:outline-none focus:border-[#c9a644]/40 transition-colors uppercase"
               />
             </div>
-            {error && <p className="text-red-400 text-sm">{error}</p>}
+            {error && <p className="text-red-400/80 text-sm">{error}</p>}
             <button
               type="submit"
               disabled={loading || joinCode.length !== 6}
-              className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-lg hover:bg-amber-400 transition-colors disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold text-base hover:bg-[#d4b860] transition-colors disabled:opacity-40"
             >
               {loading ? 'Joining…' : 'Join Room'}
             </button>

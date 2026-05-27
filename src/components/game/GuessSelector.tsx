@@ -65,7 +65,7 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
       {otBooks.length > 0 && (
         <>
           {mode === 'full' && (
-            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-amber-500/70 uppercase sticky top-0 bg-[#0f1628]/95 backdrop-blur-sm">
+            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#c9a644]/60 uppercase sticky top-0 bg-[#181411]/95 backdrop-blur-sm">
               Old Testament
             </div>
           )}
@@ -75,8 +75,8 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
               onClick={() => handleBookSelect(book)}
               className={`w-full text-left px-4 transition-colors ${compact ? 'py-1.5 text-sm' : 'py-3 text-base'} ${
                 selectedBook?.id === book.id
-                  ? 'bg-amber-500/20 text-amber-300 font-semibold'
-                  : 'text-white/80 hover:bg-white/10 hover:text-white'
+                  ? 'bg-[#c9a644]/15 text-[#d4b860] font-semibold'
+                  : 'text-white/65 hover:bg-white/8 hover:text-white/90'
               }`}
             >
               {book.name}
@@ -87,7 +87,7 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
       {ntBooks.length > 0 && (
         <>
           {mode === 'full' && (
-            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-amber-500/70 uppercase sticky top-0 bg-[#0f1628]/95 backdrop-blur-sm">
+            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#c9a644]/60 uppercase sticky top-0 bg-[#181411]/95 backdrop-blur-sm">
               New Testament
             </div>
           )}
@@ -97,8 +97,8 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
               onClick={() => handleBookSelect(book)}
               className={`w-full text-left px-4 transition-colors ${compact ? 'py-1.5 text-sm' : 'py-3 text-base'} ${
                 selectedBook?.id === book.id
-                  ? 'bg-amber-500/20 text-amber-300 font-semibold'
-                  : 'text-white/80 hover:bg-white/10 hover:text-white'
+                  ? 'bg-[#c9a644]/15 text-[#d4b860] font-semibold'
+                  : 'text-white/65 hover:bg-white/8 hover:text-white/90'
               }`}
             >
               {book.name}
@@ -124,8 +124,8 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
           whileTap={{ scale: 0.95 }}
           className={`shrink-0 px-5 py-2 rounded-lg font-bold text-sm transition-all duration-200 ${
             canSubmit
-              ? 'bg-amber-500 text-black hover:bg-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.3)]'
-              : 'bg-white/10 text-white/30 cursor-not-allowed'
+              ? 'bg-[#c9a644] text-[#0d0b09] hover:bg-[#d4b860] shadow-[0_0_20px_rgba(201,166,68,0.2)]'
+              : 'bg-white/8 text-white/25 cursor-not-allowed'
           }`}
         >
           Submit Guess
@@ -145,10 +145,10 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
               }}
               className={`flex-1 py-2 px-1 rounded-lg text-xs font-semibold transition-all duration-150 flex flex-col items-center gap-0.5 ${
                 activeStep === step.id
-                  ? 'bg-white/15 text-white'
+                  ? 'bg-white/12 text-white'
                   : step.value
-                  ? 'text-amber-400'
-                  : 'text-white/30'
+                  ? 'text-[#c9a644]'
+                  : 'text-white/25'
               }`}
             >
               <span>{step.label}</span>
@@ -181,7 +181,7 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
                     key={ch}
                     onClick={() => handleChapterSelect(ch)}
                     className={`aspect-square rounded-xl text-sm font-semibold transition-all ${
-                      selectedChapter === ch ? 'bg-amber-500 text-black' : 'bg-white/5 text-white/70 hover:bg-white/15'
+                      selectedChapter === ch ? 'bg-[#c9a644] text-[#0d0b09]' : 'bg-white/[0.04] text-white/55 hover:bg-white/10'
                     }`}
                   >
                     {ch}
@@ -202,7 +202,7 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
                     key={v}
                     onClick={() => setSelectedVerse(v)}
                     className={`aspect-square rounded-xl text-sm font-semibold transition-all ${
-                      selectedVerse === v ? 'bg-amber-500 text-black' : 'bg-white/5 text-white/70 hover:bg-white/15'
+                      selectedVerse === v ? 'bg-[#c9a644] text-[#0d0b09]' : 'bg-white/[0.04] text-white/55 hover:bg-white/10'
                     }`}
                   >
                     {v}
@@ -229,7 +229,7 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
                     key={ch}
                     onClick={() => handleChapterSelect(ch)}
                     className={`aspect-square rounded-lg text-xs font-semibold transition-all duration-100 ${
-                      selectedChapter === ch ? 'bg-amber-500 text-black' : 'bg-white/5 text-white/60 hover:bg-white/15 hover:text-white'
+                      selectedChapter === ch ? 'bg-[#c9a644] text-[#0d0b09]' : 'bg-white/[0.04] text-white/50 hover:bg-white/10 hover:text-white/90'
                     }`}
                   >
                     {ch}
@@ -251,7 +251,7 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
                     key={v}
                     onClick={() => setSelectedVerse(v)}
                     className={`aspect-square rounded-lg text-xs font-semibold transition-all duration-100 ${
-                      selectedVerse === v ? 'bg-amber-500 text-black' : 'bg-white/5 text-white/60 hover:bg-white/15 hover:text-white'
+                      selectedVerse === v ? 'bg-[#c9a644] text-[#0d0b09]' : 'bg-white/[0.04] text-white/50 hover:bg-white/10 hover:text-white/90'
                     }`}
                   >
                     {v}

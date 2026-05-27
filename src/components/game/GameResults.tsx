@@ -67,16 +67,16 @@ export default function GameResults({ results, mode, seed, onPlayAgain }: Props)
     >
       {/* Score header */}
       <div className="text-center">
-        <div className="text-white/40 text-sm uppercase tracking-widest mb-2">{modeLabel} · 5 Rounds</div>
+        <div className="text-white/30 text-sm uppercase tracking-widest mb-2">{modeLabel} · 5 Rounds</div>
         <motion.div
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.1 }}
-          className="text-7xl font-black text-amber-400 mb-1"
+          className="text-7xl font-black text-[#c9a644] mb-1 tabular-nums"
         >
           {total.toLocaleString()}
         </motion.div>
-        <div className="text-white/50 text-sm">out of 25,000</div>
+        <div className="text-white/35 text-sm">out of 25,000</div>
       </div>
 
       {/* Per-round breakdown */}
@@ -87,20 +87,20 @@ export default function GameResults({ results, mode, seed, onPlayAgain }: Props)
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 + i * 0.08 }}
-            className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-xl px-4 py-3"
+            className="flex items-center gap-4 bg-white/[0.02] border border-white/8 rounded-xl px-4 py-3"
           >
-            <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs text-white/50 flex-shrink-0">
+            <div className="w-6 h-6 rounded-full bg-white/8 flex items-center justify-center text-xs text-white/35 flex-shrink-0 tabular-nums">
               {i + 1}
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-white/80 text-sm font-semibold truncate">
                 {r.verse.book_name} {r.verse.chapter}:{r.verse.verse}
               </div>
-              <div className="text-white/35 text-xs truncate">
+              <div className="text-white/30 text-xs truncate">
                 Your guess: {r.guessBookName} {r.guessChapter}:{r.guessVerse}
               </div>
             </div>
-            <div className="font-bold text-sm flex-shrink-0" style={{ color: getScoreColor(r.score) }}>
+            <div className="font-bold text-sm flex-shrink-0 tabular-nums" style={{ color: getScoreColor(r.score) }}>
               {r.score.toLocaleString()}
             </div>
           </motion.div>
@@ -109,43 +109,41 @@ export default function GameResults({ results, mode, seed, onPlayAgain }: Props)
 
       {/* Actions */}
       <div className="flex flex-col gap-3 mt-2">
-        {/* Challenge link */}
         {challengeLink ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-center"
+            className="bg-[#c9a644]/8 border border-[#c9a644]/25 rounded-xl p-4 text-center"
           >
-            <div className="text-xs text-white/50 mb-2">Share this link — friends play the same verses</div>
+            <div className="text-xs text-white/40 mb-2">Share this link — friends play the same verses</div>
             <button
               onClick={copyLink}
-              className="text-amber-300 text-sm font-mono break-all hover:text-amber-200 transition-colors"
+              className="text-[#c9a644] text-sm font-mono break-all hover:text-[#d4b860] transition-colors"
             >
               {challengeLink}
             </button>
-            <div className="text-xs text-white/30 mt-1">{copied ? '✓ Copied!' : 'Tap to copy'}</div>
+            <div className="text-xs text-white/25 mt-1">{copied ? 'Copied!' : 'Tap to copy'}</div>
           </motion.div>
         ) : (
           <button
             onClick={handleCreateChallenge}
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-white/10 border border-white/20 text-white font-semibold hover:bg-white/15 transition-colors disabled:opacity-50"
+            className="w-full py-3 rounded-xl bg-white/[0.04] border border-white/8 text-white/70 font-semibold hover:bg-white/8 hover:text-white transition-colors disabled:opacity-40"
           >
             Challenge a friend
           </button>
         )}
 
-        {/* Leaderboard — auth-gated */}
         {user === 'loading' ? null : user ? (
           submitted ? (
-            <div className="text-center text-amber-400 text-sm py-2">
-              ✓ Score saved to your leaderboard
+            <div className="text-center text-[#c9a644]/80 text-sm py-2">
+              Score saved to leaderboard
             </div>
           ) : (
             <button
               onClick={handleSubmitScore}
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-white/10 border border-white/20 text-white font-semibold hover:bg-white/15 transition-colors disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-white/[0.04] border border-white/8 text-white/70 font-semibold hover:bg-white/8 hover:text-white transition-colors disabled:opacity-40"
             >
               {loading ? 'Saving…' : 'Save to leaderboard'}
             </button>
@@ -153,15 +151,15 @@ export default function GameResults({ results, mode, seed, onPlayAgain }: Props)
         ) : (
           <Link
             href={`/auth/login?next=${encodeURIComponent('/')}`}
-            className="w-full py-3 rounded-xl bg-white/10 border border-white/20 text-white/60 font-semibold hover:bg-white/15 transition-colors text-center text-sm"
+            className="w-full py-3 rounded-xl bg-white/[0.04] border border-white/8 text-white/50 font-semibold hover:bg-white/8 transition-colors text-center text-sm"
           >
-            Sign in to save your score to the leaderboard
+            Sign in to save your score
           </Link>
         )}
 
         <button
           onClick={onPlayAgain}
-          className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors"
+          className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold hover:bg-[#d4b860] transition-colors"
         >
           Play again
         </button>

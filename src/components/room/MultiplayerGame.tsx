@@ -58,9 +58,6 @@ export default function MultiplayerGame({
   const myGuessThisRound = roundGuesses.find(g => g.profile_id === myId);
   const hasGuessed = !!myGuessThisRound;
 
-  // Track which round triggered the overlay — prevents re-showing when round increments
-  // (timer hook state lags one render after round_started_at resets, so timerExpired
-  // briefly stays true even after round advances; comparing to current round avoids that)
   const [resultsForRound, setResultsForRound] = useState<number | null>(null);
   const showResults = resultsForRound === round;
   const advancedRef = useRef(false);
@@ -87,7 +84,7 @@ export default function MultiplayerGame({
   }
 
   const timerPct = duration > 0 ? remaining / duration : 0;
-  const timerColor = timerPct > 0.5 ? '#22c55e' : timerPct > 0.25 ? '#f59e0b' : '#ef4444';
+  const timerColor = timerPct > 0.5 ? '#6dbf8a' : timerPct > 0.25 ? '#c9a644' : '#e05c5c';
 
   return (
     <div className="min-h-[calc(100vh-56px)] flex flex-col lg:flex-row">
@@ -95,13 +92,13 @@ export default function MultiplayerGame({
       <div className="flex-1 flex flex-col gap-4 p-4 max-w-3xl mx-auto w-full">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="text-xs text-white/40 uppercase tracking-widest font-semibold">
+          <div className="text-xs text-white/30 uppercase tracking-widest font-semibold">
             Round {round} / 5
           </div>
           {/* Timer ring */}
           <div className="relative w-12 h-12">
             <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
-              <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="4" />
+              <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
               <circle
                 cx="24" cy="24" r="20" fill="none"
                 stroke={timerColor}
@@ -132,21 +129,21 @@ export default function MultiplayerGame({
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center text-amber-400/70 text-sm py-2"
+            className="text-center text-[#c9a644]/60 text-sm py-2"
           >
-            ✓ Guess submitted — waiting for others…
+            Guess submitted — waiting for others…
           </motion.div>
         )}
       </div>
 
       {/* Player sidebar */}
-      <div className="lg:w-60 border-t lg:border-t-0 lg:border-l border-white/10 p-4 flex flex-col gap-3">
+      <div className="lg:w-60 border-t lg:border-t-0 lg:border-l border-white/5 p-4 flex flex-col gap-3">
         <div className="flex items-center justify-between mb-1">
-          <div className="text-xs text-white/40 uppercase tracking-widest font-semibold">Players</div>
+          <div className="text-xs text-white/30 uppercase tracking-widest font-semibold">Players</div>
           {isHost && (
             <button
               onClick={() => endRoom(room.id)}
-              className="text-[10px] text-red-400/50 hover:text-red-400 transition-colors"
+              className="text-[10px] text-red-400/40 hover:text-red-400/70 transition-colors"
             >
               End game
             </button>
@@ -163,15 +160,17 @@ export default function MultiplayerGame({
                 layout
                 className="flex items-center gap-2"
               >
-                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${guessedThisRound ? 'bg-green-400' : 'bg-white/20'}`} />
-                <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-base flex-shrink-0">
-                  {p.profiles?.avatar_emoji ?? p.username[0]}
+                <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${guessedThisRound ? 'bg-[#6dbf8a]' : 'bg-white/15'}`} />
+                <div className="w-7 h-7 rounded-full bg-white/8 flex items-center justify-center text-base flex-shrink-0">
+                  {p.profiles?.avatar_emoji ?? (
+                    <span className="text-[10px] font-bold text-white/35">{p.username[0].toUpperCase()}</span>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-white/80 truncate">{p.username}</div>
-                  <div className="text-xs text-white/30">{p.total_score.toLocaleString()} pts</div>
+                  <div className="text-sm text-white/75 truncate">{p.username}</div>
+                  <div className="text-xs text-white/25 tabular-nums">{p.total_score.toLocaleString()} pts</div>
                 </div>
-                {p.profile_id === myId && <span className="text-[10px] text-amber-400/60">you</span>}
+                {p.profile_id === myId && <span className="text-[10px] text-[#c9a644]/50">you</span>}
               </motion.div>
             );
           })}
@@ -184,15 +183,15 @@ export default function MultiplayerGame({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-[#0f1628] border border-white/20 rounded-2xl p-6 w-full max-w-sm"
+              className="bg-[#181411] border border-white/8 rounded-2xl p-6 w-full max-w-sm"
             >
-              <div className="text-xs text-white/40 uppercase tracking-widest mb-1 text-center">Round {round} Results</div>
-              <div className="text-center text-amber-300 font-bold mb-4">
+              <div className="text-xs text-white/30 uppercase tracking-widest mb-1 text-center">Round {round} Results</div>
+              <div className="text-center text-[#c9a644] font-bold mb-4">
                 {verse.book_name} {verse.chapter}:{verse.verse}
               </div>
               <div className="flex flex-col gap-2 mb-4">
@@ -208,23 +207,27 @@ export default function MultiplayerGame({
                     const score = guess?.score ?? 0;
                     return (
                       <div key={p.profile_id} className="flex items-center gap-2">
-                        <div className="text-base">{p.profiles?.avatar_emoji ?? p.username[0]}</div>
-                        <div className="flex-1 text-sm text-white/80 truncate">{p.username}</div>
+                        <div className="text-base">
+                          {p.profiles?.avatar_emoji ?? (
+                            <span className="text-xs font-bold text-white/35">{p.username[0].toUpperCase()}</span>
+                          )}
+                        </div>
+                        <div className="flex-1 text-sm text-white/75 truncate">{p.username}</div>
                         {guess ? (
-                          <div className="text-xs text-white/40">
+                          <div className="text-xs text-white/35">
                             {guess.guess_book_name} {guess.guess_chapter}:{guess.guess_verse}
                           </div>
                         ) : (
-                          <div className="text-xs text-white/25">no guess</div>
+                          <div className="text-xs text-white/20">no guess</div>
                         )}
-                        <div className="font-bold text-sm w-16 text-right" style={{ color: getScoreColor(score) }}>
+                        <div className="font-bold text-sm w-16 text-right tabular-nums" style={{ color: getScoreColor(score) }}>
                           +{score.toLocaleString()}
                         </div>
                       </div>
                     );
                   })}
               </div>
-              <div className="text-center text-white/30 text-xs">Next round starting…</div>
+              <div className="text-center text-white/25 text-xs">Next round starting…</div>
             </motion.div>
           </motion.div>
         )}

@@ -47,11 +47,11 @@ export default function RoomLobby({ room, players, myId, isHost }: Props) {
         className="w-full max-w-sm flex flex-col gap-6"
       >
         <div className="text-center">
-          <div className="text-xs text-white/40 uppercase tracking-widest mb-3">Room Code</div>
+          <div className="text-xs text-white/30 uppercase tracking-widest mb-3">Room Code</div>
           <motion.button
             onClick={copyCode}
             whileTap={{ scale: 0.97 }}
-            className="text-5xl font-black tracking-[0.2em] text-amber-400 hover:text-amber-300 transition-colors font-mono"
+            className="text-5xl font-black tracking-[0.2em] text-[#c9a644] hover:text-[#d4b860] transition-colors font-mono"
           >
             {room.id}
           </motion.button>
@@ -61,22 +61,22 @@ export default function RoomLobby({ room, players, myId, isHost }: Props) {
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="text-xs text-amber-400/70 mt-2"
+                className="text-xs text-[#c9a644]/60 mt-2"
               >
-                Copied to clipboard!
+                Copied to clipboard
               </motion.div>
             )}
           </AnimatePresence>
-          <div className="text-white/30 text-sm mt-2">
+          <div className="text-white/25 text-sm mt-2">
             {modeLabel} · {room.round_duration_secs}s per round
           </div>
         </div>
 
         {/* Player list */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-            <span className="text-xs text-white/40 uppercase tracking-widest font-semibold">Players</span>
-            <span className="text-xs text-white/40">{players.length}/10</span>
+        <div className="bg-white/[0.03] border border-white/8 rounded-2xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-white/8 flex items-center justify-between">
+            <span className="text-xs text-white/30 uppercase tracking-widest font-semibold">Players</span>
+            <span className="text-xs text-white/25 tabular-nums">{players.length}/10</span>
           </div>
           <div className="divide-y divide-white/5">
             <AnimatePresence initial={false}>
@@ -88,15 +88,17 @@ export default function RoomLobby({ room, players, myId, isHost }: Props) {
                   exit={{ opacity: 0, height: 0 }}
                   className="flex items-center gap-3 px-4 py-3"
                 >
-                  <div className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-lg">
-                    {p.profiles?.avatar_emoji ?? p.username[0].toUpperCase()}
+                  <div className="w-8 h-8 rounded-full bg-white/8 border border-white/12 flex items-center justify-center text-base flex-shrink-0">
+                    {p.profiles?.avatar_emoji ?? (
+                      <span className="text-xs font-bold text-white/50">{p.username[0].toUpperCase()}</span>
+                    )}
                   </div>
-                  <span className="text-sm text-white/80 flex-1">{p.username}</span>
+                  <span className="text-sm text-white/75 flex-1">{p.username}</span>
                   {p.profile_id === room.host_id && (
-                    <span className="text-[10px] text-amber-400/60 font-semibold uppercase tracking-wide">Host</span>
+                    <span className="text-[10px] text-[#c9a644]/50 font-semibold uppercase tracking-wide">Host</span>
                   )}
                   {p.profile_id === myId && p.profile_id !== room.host_id && (
-                    <span className="text-[10px] text-white/30 font-semibold uppercase tracking-wide">You</span>
+                    <span className="text-[10px] text-white/25 font-semibold uppercase tracking-wide">You</span>
                   )}
                 </motion.div>
               ))}
@@ -109,21 +111,21 @@ export default function RoomLobby({ room, players, myId, isHost }: Props) {
             <button
               onClick={handleStart}
               disabled={starting || players.length < 2}
-              className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-lg hover:bg-amber-400 transition-colors disabled:opacity-40"
+              className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold text-base hover:bg-[#d4b860] transition-colors disabled:opacity-35"
             >
               {starting ? 'Starting…' : players.length < 2 ? 'Waiting for players…' : 'Start Game'}
             </button>
-            <p className="text-center text-white/25 text-xs">Need at least 2 players to start</p>
+            <p className="text-center text-white/20 text-xs">Need at least 2 players to start</p>
           </div>
         ) : (
-          <div className="text-center text-white/40 text-sm py-2">
+          <div className="text-center text-white/35 text-sm py-2">
             Waiting for host to start the game…
           </div>
         )}
 
         <button
           onClick={handleLeave}
-          className="text-center text-white/30 text-sm hover:text-white/60 transition-colors"
+          className="text-center text-white/25 text-sm hover:text-white/50 transition-colors"
         >
           Leave room
         </button>

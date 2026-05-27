@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --bg-deep: #080c18;
-  --bg-card: #0f1628;
-  --bg-surface: #161f38;
-  --gold: #f59e0b;
-  --gold-light: #fcd34d;
+  --bg-deep: #0d0b09;
+  --bg-card: #181411;
+  --bg-surface: #221e17;
+  --gold: #c9a644;
+  --gold-light: #d4b860;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -13,7 +13,7 @@
 html,
 body {
   background-color: var(--bg-deep);
-  color: #e2e8f0;
+  color: #ede8dc;
   min-height: 100vh;
 }
 
@@ -26,11 +26,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 2px;
 }
 
-/* Glow gradient at top */
+/* Warm gold glow at top */
 body::after {
   content: '';
   position: fixed;
@@ -38,7 +38,7 @@ body::after {
   left: 0;
   right: 0;
   height: 400px;
-  background: radial-gradient(ellipse 80% 200px at 50% -50px, rgba(245,158,11,0.07) 0%, transparent 100%);
+  background: radial-gradient(ellipse 80% 200px at 50% -50px, rgba(201,166,68,0.06) 0%, transparent 100%);
   pointer-events: none;
   z-index: 0;
 }

@@ -101,7 +101,7 @@ export default function GameClient({ verses, meta, mode, seed, challengeMatchId 
         <div className="flex items-center gap-3">
           <button
             onClick={() => { window.location.href = '/'; }}
-            className="flex items-center gap-1 text-white/25 hover:text-white/60 transition-colors text-xs"
+            className="flex items-center gap-1 text-white/20 hover:text-white/50 transition-colors text-xs"
             title="Back to home"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -112,12 +112,12 @@ export default function GameClient({ verses, meta, mode, seed, challengeMatchId 
           <RoundProgress total={verses.length} current={currentRound} scores={scores} />
         </div>
         <div className="text-right">
-          <div className="text-xs text-white/40 uppercase tracking-widest">Score</div>
+          <div className="text-xs text-white/30 uppercase tracking-widest">Score</div>
           <motion.div
             key={totalScore}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            className="text-2xl font-black text-amber-400"
+            className="text-2xl font-black text-[#c9a644] tabular-nums"
           >
             {totalScore.toLocaleString()}
           </motion.div>

@@ -49,42 +49,42 @@ export default function ScoreReveal({ result, onNext, isLast }: Props) {
           initial={{ scale: 0.5 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="text-6xl font-black mb-1"
+          className="text-6xl font-black mb-1 tabular-nums"
           style={{ color }}
         >
           {displayScore.toLocaleString()}
         </motion.div>
-        <div className="text-lg font-semibold" style={{ color }}>
+        <div className="text-base font-semibold" style={{ color }}>
           {label}
         </div>
       </div>
 
       {/* Comparison */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-          <div className="text-xs text-white/40 uppercase tracking-widest mb-2">Your Guess</div>
-          <div className="text-amber-400 font-bold text-lg">
+        <div className="bg-white/[0.03] border border-white/8 rounded-xl p-4 text-center">
+          <div className="text-xs text-white/30 uppercase tracking-widest mb-2">Your Guess</div>
+          <div className="text-[#c9a644] font-bold text-lg">
             {result.guessBookName} {result.guessChapter}:{result.guessVerse}
           </div>
         </div>
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-center">
-          <div className="text-xs text-white/40 uppercase tracking-widest mb-2">Correct Answer</div>
-          <div className="text-amber-300 font-bold text-lg">
+        <div className="bg-[#c9a644]/8 border border-[#c9a644]/20 rounded-xl p-4 text-center">
+          <div className="text-xs text-white/30 uppercase tracking-widest mb-2">Correct Answer</div>
+          <div className="text-[#d4b860] font-bold text-lg">
             {result.verse.book_name} {result.verse.chapter}:{result.verse.verse}
           </div>
         </div>
       </div>
 
-      <div className="text-center text-white/40 text-sm">
-        Distance: <span className="text-white/70 font-semibold">{distance.toLocaleString()} verse{distance !== 1 ? 's' : ''}</span>
+      <div className="text-center text-white/30 text-sm">
+        Distance: <span className="text-white/60 font-semibold tabular-nums">{distance.toLocaleString()} verse{distance !== 1 ? 's' : ''}</span>
       </div>
 
       <motion.button
         onClick={onNext}
         whileTap={{ scale: 0.97 }}
-        className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold text-lg hover:bg-amber-400 transition-colors shadow-[0_0_30px_rgba(251,191,36,0.25)]"
+        className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold text-base hover:bg-[#d4b860] transition-colors shadow-[0_0_30px_rgba(201,166,68,0.18)]"
       >
-        {isLast ? 'See Final Results' : 'Next Round →'}
+        {isLast ? 'See Final Results' : 'Next Round'}
       </motion.button>
     </motion.div>
   );
