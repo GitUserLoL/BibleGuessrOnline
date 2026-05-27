@@ -16,6 +16,61 @@ export async function ensureProfile(guestId: string, username: string) {
   }
 }
 
+// ── Profile settings ──────────────────────────────────────────────────────────
+
+export async function getProfile(userId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('profiles')
+    .select('username, avatar_emoji, name_changes_this_month, name_change_month')
+    .eq('id', userId)
+    .single();
+  return data;
+}
+
+export async function updateProfile(
+  userId: string,
+  newUsername: string | null,
+  newEmoji: string | null
+): Promise<{ error: string | null }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || user.id !== userId) return { error: 'Unauthorized' };
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username, name_changes_this_month, name_change_month')
+    .eq('id', userId)
+    .single();
+  if (!profile) return { error: 'Profile not found' };
+
+  const updates: Record<string, unknown> = {};
+
+  if (newEmoji !== null) {
+    updates.avatar_emoji = newEmoji;
+  }
+
+  if (newUsername !== null && newUsername.trim() !== profile.username) {
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    const isNewMonth = profile.name_change_month !== currentMonth;
+    const usedThisMonth = isNewMonth ? 0 : profile.name_changes_this_month;
+
+    if (usedThisMonth >= 5) {
+      return { error: 'You have used all 5 name changes for this month.' };
+    }
+
+    updates.username = newUsername.trim();
+    updates.name_changes_this_month = usedThisMonth + 1;
+    updates.name_change_month = currentMonth;
+  }
+
+  if (Object.keys(updates).length === 0) return { error: null };
+
+  const { error } = await supabase.from('profiles').update(updates).eq('id', userId);
+  if (error) return { error: error.message };
+  return { error: null };
+}
+
 // ── Single-player leaderboard ─────────────────────────────────────────────────
 
 export async function submitScore(profileId: string, mode: GameMode, totalScore: number) {
@@ -52,7 +107,7 @@ export async function getLeaderboard(mode: GameMode) {
   const supabase = await createClient();
   const { data } = await supabase
     .from('global_leaderboards')
-    .select('*, profiles(username)')
+    .select('*, profiles(username, avatar_emoji)')
     .eq('game_mode', mode)
     .order('high_score', { ascending: false })
     .limit(25);

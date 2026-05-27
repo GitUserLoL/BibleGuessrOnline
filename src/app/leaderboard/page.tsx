@@ -53,15 +53,17 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
       ) : (
         <div className="flex flex-col gap-2">
           {scores.map((entry: Record<string, unknown>, i: number) => {
-            const username = (entry.profiles as { username?: string } | null)?.username ?? 'Anonymous';
+            const profileData = entry.profiles as { username?: string; avatar_emoji?: string } | null;
+            const username = profileData?.username ?? 'Anonymous';
+            const avatarEmoji = profileData?.avatar_emoji ?? null;
             const highScore = entry.high_score as number;
             const achievedAt = entry.achieved_at as string;
             return (
               <div
                 key={entry.id as string}
-                className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-xl px-4 py-3"
+                className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3"
               >
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black ${
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0 ${
                   i === 0 ? 'bg-amber-500 text-black' :
                   i === 1 ? 'bg-white/20 text-white' :
                   i === 2 ? 'bg-amber-900/60 text-amber-400' :
@@ -69,11 +71,14 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
                 }`}>
                   {i + 1}
                 </div>
-                <div className="flex-1 font-semibold text-white/80">{username}</div>
-                <div className="text-xs text-white/30">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-lg flex-shrink-0">
+                  {avatarEmoji ?? username[0]?.toUpperCase() ?? '?'}
+                </div>
+                <div className="flex-1 font-semibold text-white/80 truncate">{username}</div>
+                <div className="text-xs text-white/30 flex-shrink-0">
                   {new Date(achievedAt).toLocaleDateString()}
                 </div>
-                <div className="font-black text-lg" style={{ color: getScoreColor(highScore) }}>
+                <div className="font-black text-lg flex-shrink-0" style={{ color: getScoreColor(highScore) }}>
                   {highScore.toLocaleString()}
                 </div>
               </div>
