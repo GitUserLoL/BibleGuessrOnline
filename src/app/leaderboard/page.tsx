@@ -42,7 +42,7 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
     }`;
 
   const diffClass = (d: Difficulty) =>
-    `flex-1 py-2.5 text-xs font-semibold uppercase tracking-widest transition-colors ${
+    `flex-1 py-2.5 text-xs font-semibold uppercase tracking-widest transition-colors text-center ${
       difficulty === d
         ? 'bg-[var(--bg-raised)] text-[#ede8dc]'
         : 'text-[rgba(237,232,220,0.3)] hover:text-[rgba(237,232,220,0.6)]'

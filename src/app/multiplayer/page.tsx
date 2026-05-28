@@ -97,11 +97,11 @@ export default function MultiplayerPage() {
     }
   }
 
-  const modeBtn = (m: (typeof MODES)[0]) =>
-    `r-btn flex flex-col items-center gap-1 py-3 transition-colors cursor-pointer ${
+  const modeBtn = (m: (typeof MODES)[0], large?: boolean) =>
+    `flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer border-2 ${large ? 'py-4' : 'py-3'} ${
       mode === m.id
-        ? 'bg-[var(--gold-muted)] text-[var(--gold)] border-[var(--gold-dim)] !border'
-        : 'text-[rgba(237,232,220,0.4)] hover:text-[rgba(237,232,220,0.75)]'
+        ? 'bg-[var(--gold)] text-[#0d0b09] border-[var(--gold-light)]'
+        : 'bg-[var(--bg-card)] text-[rgba(237,232,220,0.45)] border-[var(--bl)] hover:text-[rgba(237,232,220,0.8)] hover:border-[var(--border-mid)]'
     }`;
 
   return (
@@ -137,31 +137,36 @@ export default function MultiplayerPage() {
             {/* Mode */}
             <div>
               <div className="label-caps mb-3">Game Mode</div>
-              <div className="flex flex-col gap-3">
-                <div className="grid grid-cols-3 gap-2">
-                  {MODES.filter(m => m.section === 'Main').map(m => (
-                    <button key={m.id} onClick={() => setMode(m.id)} className={modeBtn(m)}>
-                      <span className="text-[10px] font-black tracking-widest">{m.abbr}</span>
-                      <span className="text-[9px] opacity-70">{m.label}</span>
-                    </button>
-                  ))}
-                </div>
-                <div className="border-t border-[var(--bl)] pt-3">
-                  <div className="label-caps mb-2">OT Categories</div>
-                  <div className="grid grid-cols-4 gap-1.5 mb-3">
+              {/* Primary scope — always visible, prominent */}
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {MODES.filter(m => m.section === 'Main').map(m => (
+                  <button key={m.id} onClick={() => setMode(m.id)} className={modeBtn(m, true)}>
+                    <span className="text-xs font-black tracking-widest">{m.abbr}</span>
+                    <span className="text-[9px] opacity-80 font-semibold">{m.label}</span>
+                  </button>
+                ))}
+              </div>
+              {/* Specific categories — clearly secondary */}
+              <div className="r-panel p-3 flex flex-col gap-3">
+                <div className="label-caps">Specific Books</div>
+                <div className="flex items-start gap-2">
+                  <span className="label-caps w-5 pt-2.5 shrink-0">OT</span>
+                  <div className="grid grid-cols-4 gap-1.5 flex-1">
                     {MODES.filter(m => m.section === 'OT').map(m => (
                       <button key={m.id} onClick={() => setMode(m.id)} className={modeBtn(m)}>
                         <span className="text-[9px] font-black tracking-wider">{m.abbr}</span>
-                        <span className="text-[8px] opacity-70 text-center px-0.5">{m.label}</span>
+                        <span className="text-[8px] opacity-75 text-center leading-tight">{m.label}</span>
                       </button>
                     ))}
                   </div>
-                  <div className="label-caps mb-2">NT Categories</div>
-                  <div className="grid grid-cols-4 gap-1.5">
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="label-caps w-5 pt-2.5 shrink-0">NT</span>
+                  <div className="grid grid-cols-4 gap-1.5 flex-1">
                     {MODES.filter(m => m.section === 'NT').map(m => (
                       <button key={m.id} onClick={() => setMode(m.id)} className={modeBtn(m)}>
                         <span className="text-[9px] font-black tracking-wider">{m.abbr}</span>
-                        <span className="text-[8px] opacity-70 text-center px-0.5">{m.label}</span>
+                        <span className="text-[8px] opacity-75 text-center leading-tight">{m.label}</span>
                       </button>
                     ))}
                   </div>
