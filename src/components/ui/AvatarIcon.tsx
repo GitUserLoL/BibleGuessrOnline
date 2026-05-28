@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { AVATAR_ICONS } from '@/lib/avatarIcons';
 
 interface Props {
@@ -6,7 +7,7 @@ interface Props {
   className?: string;
 }
 
-export default function AvatarIcon({ iconKey, size = 18, className = '' }: Props) {
+const AvatarIcon = memo(function AvatarIcon({ iconKey, size = 18, className = '' }: Props) {
   if (!iconKey || !(iconKey in AVATAR_ICONS)) return null;
   return (
     <svg
@@ -22,4 +23,6 @@ export default function AvatarIcon({ iconKey, size = 18, className = '' }: Props
       {AVATAR_ICONS[iconKey].node}
     </svg>
   );
-}
+});
+
+export default AvatarIcon;

@@ -167,7 +167,13 @@ export default function MultiplayerGame({
                 layout
                 className="flex items-center gap-2"
               >
-                <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${guessedThisRound ? 'bg-[#6dbf8a]' : 'bg-white/15'}`} />
+                <motion.div
+                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                  animate={{
+                    backgroundColor: guessedThisRound ? '#6dbf8a' : 'rgba(255,255,255,0.15)',
+                  }}
+                  transition={{ duration: 0.35 }}
+                />
                 <div className="w-7 h-7 rounded-full bg-white/8 flex items-center justify-center text-white/60 flex-shrink-0">
                   {isIconKey(p.profiles?.avatar_emoji ?? null) ? (
                     <AvatarIcon iconKey={p.profiles?.avatar_emoji} size={16} />
@@ -195,8 +201,9 @@ export default function MultiplayerGame({
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
+              initial={{ scale: 0.88, y: 28, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 26 }}
               className="bg-[#181411] border border-white/8 rounded-2xl p-6 w-full max-w-sm"
             >
               <div className="text-xs text-white/30 uppercase tracking-widest mb-1 text-center">Round {round} Results</div>
@@ -211,11 +218,17 @@ export default function MultiplayerGame({
                     const bg = roundGuesses.find(g => g.profile_id === b.profile_id)?.score ?? 0;
                     return bg - ag;
                   })
-                  .map(p => {
+                  .map((p, idx) => {
                     const guess = roundGuesses.find(g => g.profile_id === p.profile_id);
                     const score = guess?.score ?? 0;
                     return (
-                      <div key={p.profile_id} className="flex items-center gap-2">
+                      <motion.div
+                        key={p.profile_id}
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.08 + idx * 0.07, duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
+                        className="flex items-center gap-2"
+                      >
                         <div className="w-7 h-7 rounded-full bg-white/8 flex items-center justify-center text-white/60 flex-shrink-0">
                           {isIconKey(p.profiles?.avatar_emoji ?? null) ? (
                             <AvatarIcon iconKey={p.profiles?.avatar_emoji} size={16} />
@@ -234,7 +247,7 @@ export default function MultiplayerGame({
                         <div className="font-bold text-sm w-16 text-right tabular-nums" style={{ color: getScoreColor(score) }}>
                           +{score.toLocaleString()}
                         </div>
-                      </div>
+                      </motion.div>
                     );
                   })}
               </div>

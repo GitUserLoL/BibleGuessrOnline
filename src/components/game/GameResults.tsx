@@ -116,7 +116,12 @@ export default function GameResults({ results, mode, seed, difficulty, onPlayAga
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col gap-3 mt-2">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 + results.length * 0.08, duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+        className="flex flex-col gap-3 mt-2"
+      >
         {challengeLink ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
@@ -165,13 +170,14 @@ export default function GameResults({ results, mode, seed, difficulty, onPlayAga
           </Link>
         )}
 
-        <button
+        <motion.button
           onClick={onPlayAgain}
+          whileTap={{ scale: 0.97 }}
           className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold hover:bg-[#d4b860] transition-colors"
         >
           Play again
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </motion.div>
   );
 }

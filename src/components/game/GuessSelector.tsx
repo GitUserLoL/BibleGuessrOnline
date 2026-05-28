@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BookStructure, GameMode } from '@/types';
 import { filterBooksByMode } from '@/lib/gameModes';
@@ -14,27 +14,91 @@ interface Props {
   disabled: boolean;
 }
 
+interface BookListProps {
+  otBooks: BookStructure[];
+  ntBooks: BookStructure[];
+  mode: GameMode;
+  selectedBook: BookStructure | null;
+  onSelect: (book: BookStructure) => void;
+  compact?: boolean;
+}
+
+// Extracted outside GuessSelector so React sees a stable component type across renders.
+// Previously defined inline, which caused the entire book list to remount on every
+// state change (chapter/verse selection), discarding and recreating all 66 DOM nodes.
+const BookList = memo(function BookList({ otBooks, ntBooks, mode, selectedBook, onSelect, compact }: BookListProps) {
+  return (
+    <>
+      {otBooks.length > 0 && (
+        <>
+          {mode === 'full' && (
+            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#c9a644]/60 uppercase sticky top-0 bg-[#181411]/95 backdrop-blur-sm">
+              Old Testament
+            </div>
+          )}
+          {otBooks.map(book => (
+            <button
+              key={book.id}
+              onClick={() => onSelect(book)}
+              className={`w-full text-left px-4 transition-colors ${compact ? 'py-1.5 text-sm' : 'py-3 text-base'} ${
+                selectedBook?.id === book.id
+                  ? 'bg-[#c9a644]/15 text-[#d4b860] font-semibold'
+                  : 'text-white/65 hover:bg-white/8 hover:text-white/90'
+              }`}
+            >
+              {book.name}
+            </button>
+          ))}
+        </>
+      )}
+      {ntBooks.length > 0 && (
+        <>
+          {mode === 'full' && (
+            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#c9a644]/60 uppercase sticky top-0 bg-[#181411]/95 backdrop-blur-sm">
+              New Testament
+            </div>
+          )}
+          {ntBooks.map(book => (
+            <button
+              key={book.id}
+              onClick={() => onSelect(book)}
+              className={`w-full text-left px-4 transition-colors ${compact ? 'py-1.5 text-sm' : 'py-3 text-base'} ${
+                selectedBook?.id === book.id
+                  ? 'bg-[#c9a644]/15 text-[#d4b860] font-semibold'
+                  : 'text-white/65 hover:bg-white/8 hover:text-white/90'
+              }`}
+            >
+              {book.name}
+            </button>
+          ))}
+        </>
+      )}
+    </>
+  );
+});
+
 export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled }: Props) {
   const [selectedBook, setSelectedBook] = useState<BookStructure | null>(null);
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [activeStep, setActiveStep] = useState<Step>('book');
 
-  const availableBooks = filterBooksByMode(mode, bibleStructure);
-  const otBooks = availableBooks.filter(b => b.testament === 'OT');
-  const ntBooks = availableBooks.filter(b => b.testament === 'NT');
+  const availableBooks = useMemo(() => filterBooksByMode(mode, bibleStructure), [mode, bibleStructure]);
+  const otBooks = useMemo(() => availableBooks.filter(b => b.testament === 'OT'), [availableBooks]);
+  const ntBooks = useMemo(() => availableBooks.filter(b => b.testament === 'NT'), [availableBooks]);
 
   const maxChapters = selectedBook?.chapterVerseCounts.length ?? 0;
   const maxVerses = selectedBook && selectedChapter
     ? selectedBook.chapterVerseCounts[selectedChapter - 1]
     : 0;
 
-  function handleBookSelect(book: BookStructure) {
+  // Stable reference — setState functions from useState are always stable.
+  const handleBookSelect = useCallback((book: BookStructure) => {
     setSelectedBook(book);
     setSelectedChapter(null);
     setSelectedVerse(null);
     setActiveStep('chapter');
-  }
+  }, []);
 
   function handleChapterSelect(ch: number) {
     setSelectedChapter(ch);
@@ -58,55 +122,6 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
     { id: 'chapter', label: 'Chapter', value: selectedChapter ? String(selectedChapter) : null },
     { id: 'verse', label: 'Verse', value: selectedVerse ? String(selectedVerse) : null },
   ];
-
-  const BookList = ({ compact }: { compact?: boolean }) => (
-    <>
-      {otBooks.length > 0 && (
-        <>
-          {(mode === 'full') && (
-            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#c9a644]/60 uppercase sticky top-0 bg-[#181411]/95 backdrop-blur-sm">
-              Old Testament
-            </div>
-          )}
-          {otBooks.map(book => (
-            <button
-              key={book.id}
-              onClick={() => handleBookSelect(book)}
-              className={`w-full text-left px-4 transition-colors ${compact ? 'py-1.5 text-sm' : 'py-3 text-base'} ${
-                selectedBook?.id === book.id
-                  ? 'bg-[#c9a644]/15 text-[#d4b860] font-semibold'
-                  : 'text-white/65 hover:bg-white/8 hover:text-white/90'
-              }`}
-            >
-              {book.name}
-            </button>
-          ))}
-        </>
-      )}
-      {ntBooks.length > 0 && (
-        <>
-          {mode === 'full' && (
-            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#c9a644]/60 uppercase sticky top-0 bg-[#181411]/95 backdrop-blur-sm">
-              New Testament
-            </div>
-          )}
-          {ntBooks.map(book => (
-            <button
-              key={book.id}
-              onClick={() => handleBookSelect(book)}
-              className={`w-full text-left px-4 transition-colors ${compact ? 'py-1.5 text-sm' : 'py-3 text-base'} ${
-                selectedBook?.id === book.id
-                  ? 'bg-[#c9a644]/15 text-[#d4b860] font-semibold'
-                  : 'text-white/65 hover:bg-white/8 hover:text-white/90'
-              }`}
-            >
-              {book.name}
-            </button>
-          ))}
-        </>
-      )}
-    </>
-  );
 
   return (
     <div className="w-full flex flex-col gap-3">
@@ -164,7 +179,13 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
           <AnimatePresence mode="wait">
             {activeStep === 'book' && (
               <motion.div key="book" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <BookList />
+                <BookList
+                  otBooks={otBooks}
+                  ntBooks={ntBooks}
+                  mode={mode}
+                  selectedBook={selectedBook}
+                  onSelect={handleBookSelect}
+                />
               </motion.div>
             )}
             {activeStep === 'chapter' && selectedBook && (
@@ -216,7 +237,14 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
       {/* ── DESKTOP: 3-panel side by side ── */}
       <div className="hidden md:grid grid-cols-[200px_1fr_1fr] gap-3 h-64">
         <div className="bg-white/5 border border-white/10 rounded-xl overflow-y-auto">
-          <BookList compact />
+          <BookList
+            otBooks={otBooks}
+            ntBooks={ntBooks}
+            mode={mode}
+            selectedBook={selectedBook}
+            onSelect={handleBookSelect}
+            compact
+          />
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-xl overflow-y-auto p-2">

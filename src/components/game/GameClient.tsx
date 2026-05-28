@@ -86,7 +86,12 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, diffi
 
   if (phase === 'finished') {
     return (
-      <div className="w-full max-w-2xl mx-auto px-4 py-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-2xl mx-auto px-4 py-8"
+      >
         <GameResults
           results={results}
           mode={mode}
@@ -94,7 +99,7 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, diffi
           difficulty={difficulty}
           onPlayAgain={handlePlayAgain}
         />
-      </div>
+      </motion.div>
     );
   }
 
@@ -140,9 +145,10 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, diffi
         {phase === 'guessing' ? (
           <motion.div
             key={`guess-${currentRound}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
             className="flex flex-col gap-6"
           >
             <VerseDisplay
@@ -161,9 +167,10 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, diffi
         ) : (
           <motion.div
             key={`reveal-${currentRound}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
             <ScoreReveal
               result={results[results.length - 1]}

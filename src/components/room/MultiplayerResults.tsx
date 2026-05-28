@@ -92,7 +92,11 @@ export default function MultiplayerResults({ players, guesses, verses, room, myI
                   key={p.profile_id}
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.07 }}
+                  transition={
+                    i === 0
+                      ? { type: 'spring', stiffness: 260, damping: 22, delay: 0 }
+                      : { delay: i * 0.07, duration: 0.25, ease: [0.25, 1, 0.5, 1] }
+                  }
                   className={`flex items-center gap-4 px-4 py-3 rounded-xl border ${
                     i === 0 ? 'bg-[#c9a644]/10 border-[#c9a644]/30' : 'bg-white/[0.02] border-white/8'
                   }`}
