@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { createRoom, joinRoom } from '@/lib/actions';
-import type { GameMode } from '@/types';
+import type { GameMode, Difficulty } from '@/types';
 
 const MODES: { id: GameMode; abbr: string; label: string; section: string }[] = [
   { id: 'full',            abbr: 'ALL',  label: 'Full Bible',      section: 'Main'  },
@@ -36,6 +36,7 @@ export default function MultiplayerPage() {
   const router = useRouter();
   const [tab, setTab] = useState<'create' | 'join'>('create');
   const [mode, setMode] = useState<GameMode>('full');
+  const [difficulty, setDifficulty] = useState<Difficulty>('hard');
   const [duration, setDuration] = useState(45);
   const [joinCode, setJoinCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -64,7 +65,7 @@ export default function MultiplayerPage() {
         ? (user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'Player')
         : getPlayerName();
 
-      const roomId = await createRoom(playerId, playerName, mode, duration);
+      const roomId = await createRoom(playerId, playerName, mode, duration, difficulty);
       router.push(`/room/${roomId}`);
     } catch {
       setError('Failed to create room. Please try again.');
@@ -184,6 +185,27 @@ export default function MultiplayerPage() {
                     ))}
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Difficulty */}
+            <div>
+              <div className="text-xs text-white/35 uppercase tracking-widest mb-3">Difficulty</div>
+              <div className="flex gap-1 p-1 bg-white/[0.03] border border-white/8 rounded-xl">
+                {(['hard', 'easy'] as Difficulty[]).map(d => (
+                  <button
+                    key={d}
+                    onClick={() => setDifficulty(d)}
+                    className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all flex flex-col items-center gap-0.5 ${
+                      difficulty === d ? 'bg-white/12 text-white' : 'text-white/35 hover:text-white/60'
+                    }`}
+                  >
+                    <span className="capitalize">{d}</span>
+                    <span className="text-[9px] font-normal opacity-60">
+                      {d === 'hard' ? 'One verse only' : '±10 context verses'}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
 

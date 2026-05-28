@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { Verse, GameMode, RoundResult, BibleMeta } from '@/types';
+import type { Verse, GameMode, RoundResult, BibleMeta, Difficulty } from '@/types';
 import { calculateScore } from '@/lib/scoring';
 import { getModeStartIndexFromMeta } from '@/lib/gameModes';
 import VerseDisplay from './VerseDisplay';
@@ -17,6 +17,8 @@ interface Props {
   mode: GameMode;
   seed: number;
   verseCount: number;
+  difficulty: Difficulty;
+  contextVerses?: Verse[][];
   challengeMatchId?: string;
 }
 
@@ -36,7 +38,7 @@ function getModeIndex(globalIndex: number, mode: GameMode, meta: BibleMeta): num
   return globalIndex - getModeStartIndexFromMeta(mode, meta);
 }
 
-export default function GameClient({ verses, meta, mode, seed, verseCount, challengeMatchId }: Props) {
+export default function GameClient({ verses, meta, mode, seed, verseCount, difficulty, contextVerses, challengeMatchId }: Props) {
   const [currentRound, setCurrentRound] = useState(0);
   const [phase, setPhase] = useState<Phase>('guessing');
   const [results, setResults] = useState<RoundResult[]>([]);
@@ -63,7 +65,7 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, chall
       setResults(prev => [...prev, result]);
       setPhase('revealing');
     },
-    [currentRound, verses, mode, meta]
+    [currentRound, verses, mode, meta, verseCount]
   );
 
   const handleNext = useCallback(() => {
@@ -76,8 +78,8 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, chall
   }, [currentRound, verses.length]);
 
   const handlePlayAgain = useCallback(() => {
-    window.location.href = `/?mode=${mode}`;
-  }, [mode]);
+    window.location.href = `/?mode=${mode}&difficulty=${difficulty}`;
+  }, [mode, difficulty]);
 
   const totalScore = results.reduce((sum, r) => sum + r.score, 0);
   const scores = results.map(r => r.score);
@@ -89,6 +91,7 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, chall
           results={results}
           mode={mode}
           seed={seed}
+          difficulty={difficulty}
           onPlayAgain={handlePlayAgain}
         />
       </div>
@@ -112,16 +115,23 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, chall
           </button>
           <RoundProgress total={verses.length} current={currentRound} scores={scores} />
         </div>
-        <div className="text-right">
-          <div className="text-xs text-white/30 uppercase tracking-widest">Score</div>
-          <motion.div
-            key={totalScore}
-            initial={{ scale: 1.15 }}
-            animate={{ scale: 1 }}
-            className="text-2xl font-black text-[#c9a644] tabular-nums"
-          >
-            {totalScore.toLocaleString()}
-          </motion.div>
+        <div className="flex items-center gap-3">
+          {difficulty === 'easy' && (
+            <span className="text-[10px] font-bold tracking-widest text-[#c9a644]/50 uppercase border border-[#c9a644]/20 rounded px-1.5 py-0.5">
+              Easy
+            </span>
+          )}
+          <div className="text-right">
+            <div className="text-xs text-white/30 uppercase tracking-widest">Score</div>
+            <motion.div
+              key={totalScore}
+              initial={{ scale: 1.15 }}
+              animate={{ scale: 1 }}
+              className="text-2xl font-black text-[#c9a644] tabular-nums"
+            >
+              {totalScore.toLocaleString()}
+            </motion.div>
+          </div>
         </div>
       </div>
 
@@ -135,7 +145,12 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, chall
             exit={{ opacity: 0 }}
             className="flex flex-col gap-6"
           >
-            <VerseDisplay text={verses[currentRound].text} roundNumber={currentRound} />
+            <VerseDisplay
+              text={verses[currentRound].text}
+              roundNumber={currentRound}
+              contextVerses={contextVerses?.[currentRound]}
+              currentVerseGlobalIndex={verses[currentRound].index}
+            />
             <GuessSelector
               bibleStructure={meta.books}
               mode={mode}

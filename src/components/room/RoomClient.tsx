@@ -11,6 +11,7 @@ interface Room {
   id: string;
   host_id: string;
   game_mode: string;
+  difficulty: string;
   seed: number;
   status: string;
   current_round: number;
@@ -42,12 +43,13 @@ interface Props {
   initialPlayers: RoomPlayer[];
   initialGuesses: RoomGuess[];
   verses: Verse[];
+  contextVerses: Verse[][];
   meta: BibleMeta;
   authUserId: string | null;
 }
 
 export default function RoomClient({
-  initialRoom, initialPlayers, initialGuesses, verses, meta, authUserId
+  initialRoom, initialPlayers, initialGuesses, verses, contextVerses, meta, authUserId
 }: Props) {
   const [room, setRoom] = useState<Room>(initialRoom);
   const [players, setPlayers] = useState<RoomPlayer[]>(initialPlayers);
@@ -124,6 +126,7 @@ export default function RoomClient({
       players={players}
       guesses={guesses}
       verses={verses}
+      contextVerses={contextVerses}
       meta={meta}
       myId={myId}
       isHost={isHost}

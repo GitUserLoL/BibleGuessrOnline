@@ -1,8 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import type { GameMode } from '@/types';
+import type { GameMode, Difficulty } from '@/types';
 import { generateGameSeed } from '@/lib/prng';
 
 const MAIN_MODES: { id: GameMode; abbr: string; label: string; desc: string; books: string }[] = [
@@ -27,10 +28,11 @@ const NT_CATEGORIES: { id: GameMode; abbr: string; label: string; books: string 
 
 export default function Home() {
   const router = useRouter();
+  const [difficulty, setDifficulty] = useState<Difficulty>('hard');
 
   function startGame(mode: GameMode) {
     const seed = generateGameSeed();
-    router.push(`/game?mode=${mode}&seed=${seed}`);
+    router.push(`/game?mode=${mode}&seed=${seed}&difficulty=${difficulty}`);
   }
 
   return (
@@ -50,6 +52,31 @@ export default function Home() {
           <br />
           How well do you know the Word?
         </p>
+      </motion.div>
+
+      {/* Difficulty toggle */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="flex gap-1 p-1 bg-white/[0.03] border border-white/8 rounded-xl mb-8"
+      >
+        {(['hard', 'easy'] as Difficulty[]).map(d => (
+          <button
+            key={d}
+            onClick={() => setDifficulty(d)}
+            className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all duration-150 flex flex-col items-center gap-0.5 ${
+              difficulty === d
+                ? 'bg-white/10 text-white'
+                : 'text-white/30 hover:text-white/55'
+            }`}
+          >
+            <span className="capitalize">{d}</span>
+            <span className="text-[10px] font-normal opacity-60">
+              {d === 'hard' ? 'One verse, no context' : '±10 verses of context'}
+            </span>
+          </button>
+        ))}
       </motion.div>
 
       {/* Main mode cards */}

@@ -85,3 +85,11 @@ export function getBibleMeta(): BibleMeta {
 export function getModeVerseCount(mode: GameMode): number {
   return getVersesByMode(mode).length;
 }
+
+export function getContextVerses(verse: Verse, modeVerses: Verse[], radius = 10): Verse[] {
+  const idx = modeVerses.findIndex(v => v.index === verse.index);
+  if (idx === -1) return [verse];
+  const start = Math.max(0, idx - radius);
+  const end = Math.min(modeVerses.length - 1, idx + radius);
+  return modeVerses.slice(start, end + 1);
+}

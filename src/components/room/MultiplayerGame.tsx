@@ -20,7 +20,7 @@ interface RoomGuess {
 
 interface Props {
   room: Room; players: RoomPlayer[]; guesses: RoomGuess[];
-  verses: Verse[]; meta: BibleMeta; myId: string; isHost: boolean;
+  verses: Verse[]; contextVerses: Verse[][]; meta: BibleMeta; myId: string; isHost: boolean;
 }
 
 function useTimer(roundStartedAt: string | null, durationSecs: number) {
@@ -41,7 +41,7 @@ function useTimer(roundStartedAt: string | null, durationSecs: number) {
 }
 
 export default function MultiplayerGame({
-  room, players, guesses, verses, meta, myId, isHost
+  room, players, guesses, verses, contextVerses, meta, myId, isHost
 }: Props) {
   const round = room.current_round;
   const verse = verses[round - 1];
@@ -116,7 +116,12 @@ export default function MultiplayerGame({
           </div>
         </div>
 
-        <VerseDisplay text={verse.text} roundNumber={round} />
+        <VerseDisplay
+          text={verse.text}
+          roundNumber={round}
+          contextVerses={contextVerses[round - 1]?.length ? contextVerses[round - 1] : undefined}
+          currentVerseGlobalIndex={verse.index}
+        />
 
         <GuessSelector
           bibleStructure={meta.books}

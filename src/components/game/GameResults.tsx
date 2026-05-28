@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import type { RoundResult, GameMode } from '@/types';
+import type { RoundResult, GameMode, Difficulty } from '@/types';
 import { getScoreColor } from '@/lib/scoring';
 import { createChallenge, submitScore } from '@/lib/actions';
 import { createClient } from '@/lib/supabase/client';
@@ -13,10 +13,11 @@ interface Props {
   results: RoundResult[];
   mode: GameMode;
   seed: number;
+  difficulty: Difficulty;
   onPlayAgain: () => void;
 }
 
-export default function GameResults({ results, mode, seed, onPlayAgain }: Props) {
+export default function GameResults({ results, mode, seed, difficulty, onPlayAgain }: Props) {
   const [challengeLink, setChallengeLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -24,7 +25,14 @@ export default function GameResults({ results, mode, seed, onPlayAgain }: Props)
   const [user, setUser] = useState<User | null | 'loading'>('loading');
 
   const total = results.reduce((sum, r) => sum + r.score, 0);
-  const modeLabel = mode === 'full' ? 'Full Bible' : mode === 'ot' ? 'Old Testament' : 'New Testament';
+  const MODE_LABELS: Record<string, string> = {
+    full: 'Full Bible', ot: 'Old Testament', nt: 'New Testament',
+    law: 'The Law', history: 'History', 'major-prophets': 'Major Prophets',
+    'minor-prophets': 'Minor Prophets', gospels: 'Gospels', acts: 'Acts',
+    letters: 'Letters', revelation: 'Prophecy',
+  };
+  const modeLabel = MODE_LABELS[mode] ?? mode;
+  const difficultyLabel = difficulty === 'easy' ? 'Easy' : 'Hard';
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => setUser(data.user));
@@ -34,7 +42,7 @@ export default function GameResults({ results, mode, seed, onPlayAgain }: Props)
     if (!user || user === 'loading') return;
     setLoading(true);
     try {
-      await submitScore(user.id, mode, total);
+      await submitScore(user.id, mode, total, difficulty);
       setSubmitted(true);
     } finally {
       setLoading(false);
@@ -67,7 +75,7 @@ export default function GameResults({ results, mode, seed, onPlayAgain }: Props)
     >
       {/* Score header */}
       <div className="text-center">
-        <div className="text-white/30 text-sm uppercase tracking-widest mb-2">{modeLabel} · 5 Rounds</div>
+        <div className="text-white/30 text-sm uppercase tracking-widest mb-2">{modeLabel} · {difficultyLabel} · 5 Rounds</div>
         <motion.div
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

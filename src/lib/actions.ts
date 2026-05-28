@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getVersesByMode, getBibleMeta, getModeVerseCount } from '@/lib/bible';
 import { generateSeededIndices } from '@/lib/prng';
 import { calculateScore } from '@/lib/scoring';
-import type { GameMode } from '@/types';
+import type { GameMode, Difficulty } from '@/types';
 
 // ── Profile ──────────────────────────────────────────────────────────────────
 
@@ -73,7 +73,12 @@ export async function updateProfile(
 
 // ── Single-player leaderboard ─────────────────────────────────────────────────
 
-export async function submitScore(profileId: string, mode: GameMode, totalScore: number) {
+export async function submitScore(
+  profileId: string,
+  mode: GameMode,
+  totalScore: number,
+  difficulty: Difficulty = 'hard'
+) {
   const supabase = await createClient();
 
   // Only authenticated (non-guest) users can save to the leaderboard
@@ -88,17 +93,18 @@ export async function submitScore(profileId: string, mode: GameMode, totalScore:
   if (!profile || profile.is_guest) return;
 
   await supabase.from('global_leaderboards').upsert(
-    { profile_id: profileId, game_mode: mode, high_score: totalScore, achieved_at: new Date().toISOString() },
-    { onConflict: 'profile_id,game_mode', ignoreDuplicates: false }
+    { profile_id: profileId, game_mode: mode, difficulty, high_score: totalScore, achieved_at: new Date().toISOString() },
+    { onConflict: 'profile_id,game_mode,difficulty', ignoreDuplicates: false }
   );
 }
 
-export async function getLeaderboard(mode: GameMode) {
+export async function getLeaderboard(mode: GameMode, difficulty: Difficulty = 'hard') {
   const supabase = await createClient();
   const { data } = await supabase
     .from('global_leaderboards')
     .select('*, profiles(username, avatar_emoji)')
     .eq('game_mode', mode)
+    .eq('difficulty', difficulty)
     .order('high_score', { ascending: false })
     .limit(25);
   return data ?? [];
@@ -138,7 +144,8 @@ export async function createRoom(
   hostId: string,
   fallbackUsername: string,
   mode: GameMode,
-  durationSecs: number
+  durationSecs: number,
+  difficulty: Difficulty = 'hard'
 ) {
   const supabase = await createClient();
   await ensureProfile(hostId, fallbackUsername);
@@ -160,6 +167,7 @@ export async function createRoom(
       id: code,
       host_id: hostId,
       game_mode: mode,
+      difficulty,
       seed,
       round_duration_secs: durationSecs,
     });

@@ -1,10 +1,11 @@
 import { getLeaderboard } from '@/lib/actions';
-import type { GameMode } from '@/types';
+import type { GameMode, Difficulty } from '@/types';
 import { getScoreColor } from '@/lib/scoring';
 import Link from 'next/link';
 
 interface SearchParams {
   mode?: string;
+  difficulty?: string;
 }
 
 const TABS: { id: GameMode; label: string; section: 'main' | 'ot' | 'nt' }[] = [
@@ -24,7 +25,8 @@ const TABS: { id: GameMode; label: string; section: 'main' | 'ot' | 'nt' }[] = [
 export default async function LeaderboardPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await searchParams;
   const mode = (params.mode ?? 'full') as GameMode;
-  const scores = await getLeaderboard(mode);
+  const difficulty: Difficulty = params.difficulty === 'easy' ? 'easy' : 'hard';
+  const scores = await getLeaderboard(mode, difficulty);
 
   const mainTabs  = TABS.filter(t => t.section === 'main');
   const otTabs    = TABS.filter(t => t.section === 'ot');
@@ -37,16 +39,36 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
         : 'text-white/40 hover:text-white/70 hover:bg-white/8 border border-transparent'
     }`;
 
+  const diffClass = (d: Difficulty) =>
+    `px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+      difficulty === d
+        ? 'bg-white/12 text-white'
+        : 'text-white/35 hover:text-white/60'
+    }`;
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <h1 className="text-4xl font-black text-white mb-2">Leaderboard</h1>
       <p className="text-white/40 text-sm mb-8">All-time high scores from signed-in players</p>
 
-      {/* Tab groups */}
+      {/* Difficulty toggle */}
+      <div className="flex gap-1 p-1 bg-white/[0.03] border border-white/8 rounded-xl mb-5">
+        {(['hard', 'easy'] as Difficulty[]).map(d => (
+          <Link
+            key={d}
+            href={`/leaderboard?mode=${mode}&difficulty=${d}`}
+            className={diffClass(d)}
+          >
+            {d === 'hard' ? 'Hard' : 'Easy'}
+          </Link>
+        ))}
+      </div>
+
+      {/* Mode tab groups */}
       <div className="flex flex-col gap-2 mb-8 pb-4 border-b border-white/8">
         <div className="flex gap-1.5 flex-wrap">
           {mainTabs.map(tab => (
-            <Link key={tab.id} href={`/leaderboard?mode=${tab.id}`} className={tabClass(tab.id)}>
+            <Link key={tab.id} href={`/leaderboard?mode=${tab.id}&difficulty=${difficulty}`} className={tabClass(tab.id)}>
               {tab.label}
             </Link>
           ))}
@@ -54,7 +76,7 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
         <div className="flex gap-1.5 flex-wrap items-center">
           <span className="text-[9px] font-bold tracking-[0.15em] text-white/18 uppercase mr-1">OT</span>
           {otTabs.map(tab => (
-            <Link key={tab.id} href={`/leaderboard?mode=${tab.id}`} className={tabClass(tab.id)}>
+            <Link key={tab.id} href={`/leaderboard?mode=${tab.id}&difficulty=${difficulty}`} className={tabClass(tab.id)}>
               {tab.label}
             </Link>
           ))}
@@ -62,7 +84,7 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
         <div className="flex gap-1.5 flex-wrap items-center">
           <span className="text-[9px] font-bold tracking-[0.15em] text-white/18 uppercase mr-1">NT</span>
           {ntTabs.map(tab => (
-            <Link key={tab.id} href={`/leaderboard?mode=${tab.id}`} className={tabClass(tab.id)}>
+            <Link key={tab.id} href={`/leaderboard?mode=${tab.id}&difficulty=${difficulty}`} className={tabClass(tab.id)}>
               {tab.label}
             </Link>
           ))}

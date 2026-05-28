@@ -51,6 +51,7 @@ export default async function ChallengePage({ params }: Props) {
             mode={typedMatch.game_mode}
             seed={typedMatch.seed}
             verseCount={verseCount}
+            difficulty="hard"
             challengeMatchId={matchId}
           />
         </div>

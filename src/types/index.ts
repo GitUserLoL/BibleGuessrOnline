@@ -3,6 +3,8 @@ export type GameMode =
   | 'law' | 'history' | 'major-prophets' | 'minor-prophets'
   | 'gospels' | 'acts' | 'letters' | 'revelation';
 
+export type Difficulty = 'hard' | 'easy';
+
 export interface Verse {
   book_name: string;
   book: number;

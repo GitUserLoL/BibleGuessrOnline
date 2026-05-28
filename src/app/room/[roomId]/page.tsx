@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { getVersesByMode, getBibleMeta } from '@/lib/bible';
+import { getVersesByMode, getBibleMeta, getContextVerses } from '@/lib/bible';
 import { generateSeededIndices } from '@/lib/prng';
 import RoomClient from '@/components/room/RoomClient';
 
@@ -36,6 +36,10 @@ export default async function RoomPage({ params }: Props) {
   const verses = indices.map(i => modeVerses[i]);
   const meta = getBibleMeta();
 
+  const contextVerses = room.difficulty === 'easy'
+    ? verses.map(v => getContextVerses(v, modeVerses, 10))
+    : verses.map(() => []);
+
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
@@ -44,6 +48,7 @@ export default async function RoomPage({ params }: Props) {
       initialPlayers={players ?? []}
       initialGuesses={guesses ?? []}
       verses={verses}
+      contextVerses={contextVerses}
       meta={meta}
       authUserId={user?.id ?? null}
     />
