@@ -3,14 +3,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { updateProfile } from '@/lib/actions';
-
-const EMOJI_OPTIONS = [
-  '✝️','🙏','📖','✡️','🕊️','⭐','🌟','💫',
-  '🔥','🌈','👑','🦁','🐑','🌿','🍞','🍷',
-  '⚔️','🛡️','🏔️','🌊','😊','😄','🤔','🧐',
-  '💪','🤝','❤️','💛','💙','💚','🏆','🎯',
-  '🦋','🦅','🌙','☀️',
-];
+import { AVATAR_ICONS, AVATAR_ICON_KEYS } from '@/lib/avatarIcons';
+import AvatarIcon from '@/components/ui/AvatarIcon';
 
 interface Props {
   userId: string;
@@ -20,7 +14,6 @@ interface Props {
 }
 
 export default function ProfileClient({ userId, initialUsername, initialEmoji, nameChangesUsed: initialChangesUsed }: Props) {
-  // "saved" tracks what's in the DB; "username"/"emoji" track the current form values
   const [savedUsername, setSavedUsername] = useState(initialUsername);
   const [savedEmoji, setSavedEmoji] = useState(initialEmoji);
   const [username, setUsername] = useState(initialUsername);
@@ -53,7 +46,6 @@ export default function ProfileClient({ userId, initialUsername, initialEmoji, n
       return;
     }
 
-    // Update saved baseline so the form correctly detects future changes
     if (usernameChanged) {
       setSavedUsername(username.trim());
       setChangesUsed(u => u + 1);
@@ -62,7 +54,6 @@ export default function ProfileClient({ userId, initialUsername, initialEmoji, n
       setSavedEmoji(emoji);
     }
 
-    // Tell AuthButton (and anyone else) to refresh profile display
     window.dispatchEvent(
       new CustomEvent('profileUpdated', {
         detail: { username: usernameChanged ? username.trim() : savedUsername, emoji },
@@ -85,28 +76,29 @@ export default function ProfileClient({ userId, initialUsername, initialEmoji, n
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-          className="w-24 h-24 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center text-5xl mb-3"
+          className="w-24 h-24 rounded-full bg-white/10 border-2 border-[#c9a644]/30 flex items-center justify-center text-[#c9a644] mb-3"
         >
-          {emoji}
+          <AvatarIcon iconKey={emoji} size={44} />
         </motion.div>
-        <div className="text-white/50 text-sm">Your avatar</div>
+        <div className="text-white/50 text-sm">{AVATAR_ICONS[emoji]?.label ?? 'Avatar'}</div>
       </div>
 
-      {/* Emoji picker */}
+      {/* Icon picker */}
       <div className="mb-8">
-        <div className="text-xs text-white/40 uppercase tracking-widest mb-3">Choose an emoji</div>
-        <div className="grid grid-cols-9 gap-2">
-          {EMOJI_OPTIONS.map(e => (
+        <div className="text-xs text-white/40 uppercase tracking-widest mb-3">Choose an icon</div>
+        <div className="grid grid-cols-8 gap-2">
+          {AVATAR_ICON_KEYS.map(key => (
             <button
-              key={e}
-              onClick={() => setEmoji(e)}
-              className={`w-full aspect-square rounded-xl text-xl flex items-center justify-center transition-all ${
-                emoji === e
-                  ? 'bg-amber-500/30 border-2 border-amber-500 scale-110'
-                  : 'bg-white/5 border border-white/10 hover:bg-white/10'
+              key={key}
+              onClick={() => setEmoji(key)}
+              title={AVATAR_ICONS[key].label}
+              className={`w-full aspect-square rounded-xl flex items-center justify-center transition-all ${
+                emoji === key
+                  ? 'bg-[#c9a644]/20 border-2 border-[#c9a644] text-[#c9a644] scale-110'
+                  : 'bg-white/5 border border-white/10 hover:bg-white/10 text-white/50 hover:text-white/80'
               }`}
             >
-              {e}
+              <AvatarIcon iconKey={key} size={18} />
             </button>
           ))}
         </div>
@@ -127,7 +119,7 @@ export default function ProfileClient({ userId, initialUsername, initialEmoji, n
           maxLength={24}
           disabled={changesLeft === 0}
           placeholder="Your display name"
-          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a644]/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         />
         {changesLeft === 0 && (
           <p className="text-xs text-red-400 mt-2">Name change limit reached — resets next month.</p>
@@ -141,15 +133,18 @@ export default function ProfileClient({ userId, initialUsername, initialEmoji, n
         </motion.p>
       )}
       {success && (
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-amber-400 text-sm mb-4">
-          ✓ Profile updated
-        </motion.p>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-[#c9a644] text-sm mb-4">
+          <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+          Profile updated
+        </motion.div>
       )}
 
       <button
         onClick={handleSave}
         disabled={!hasChanges || saving}
-        className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold hover:bg-[#d4b860] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {saving ? 'Saving…' : 'Save changes'}
       </button>

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { startRoom, leaveRoom } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
+import AvatarIcon from '@/components/ui/AvatarIcon';
+import { isIconKey } from '@/lib/avatarIcons';
 
 interface Room { id: string; host_id: string; game_mode: string; round_duration_secs: number }
 interface Player { profile_id: string; username: string; profiles?: { avatar_emoji: string | null } | null }
@@ -37,7 +39,13 @@ export default function RoomLobby({ room, players, myId, isHost }: Props) {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  const modeLabel = room.game_mode === 'full' ? 'Full Bible' : room.game_mode === 'ot' ? 'Old Testament' : 'New Testament';
+  const MODE_LABELS: Record<string, string> = {
+    full: 'Full Bible', ot: 'Old Testament', nt: 'New Testament',
+    law: 'The Law', history: 'History', 'major-prophets': 'Major Prophets',
+    'minor-prophets': 'Minor Prophets', gospels: 'Gospels', acts: 'Acts',
+    letters: 'Letters', revelation: 'Prophecy',
+  };
+  const modeLabel = MODE_LABELS[room.game_mode] ?? room.game_mode;
 
   return (
     <div className="min-h-[calc(100vh-56px)] flex items-center justify-center px-4 py-12">
@@ -88,8 +96,10 @@ export default function RoomLobby({ room, players, myId, isHost }: Props) {
                   exit={{ opacity: 0, height: 0 }}
                   className="flex items-center gap-3 px-4 py-3"
                 >
-                  <div className="w-8 h-8 rounded-full bg-white/8 border border-white/12 flex items-center justify-center text-base flex-shrink-0">
-                    {p.profiles?.avatar_emoji ?? (
+                  <div className="w-8 h-8 rounded-full bg-white/8 border border-white/12 flex items-center justify-center text-white/60 flex-shrink-0">
+                    {isIconKey(p.profiles?.avatar_emoji ?? null) ? (
+                      <AvatarIcon iconKey={p.profiles?.avatar_emoji} size={18} />
+                    ) : (
                       <span className="text-xs font-bold text-white/50">{p.username[0].toUpperCase()}</span>
                     )}
                   </div>

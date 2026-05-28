@@ -6,6 +6,8 @@ import { getScoreColor } from '@/lib/scoring';
 import Link from 'next/link';
 import type { Verse } from '@/types';
 import { resetRoom } from '@/lib/actions';
+import AvatarIcon from '@/components/ui/AvatarIcon';
+import { isIconKey } from '@/lib/avatarIcons';
 
 interface Player {
   profile_id: string;
@@ -102,8 +104,10 @@ export default function MultiplayerResults({ players, guesses, verses, room, myI
                   }`}>
                     {i + 1}
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-base flex-shrink-0">
-                    {p.profiles?.avatar_emoji ?? (
+                  <div className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-white/60 flex-shrink-0">
+                    {isIconKey(p.profiles?.avatar_emoji ?? null) ? (
+                      <AvatarIcon iconKey={p.profiles?.avatar_emoji} size={18} />
+                    ) : (
                       <span className="text-xs font-bold text-white/40">{p.username[0].toUpperCase()}</span>
                     )}
                   </div>
@@ -159,8 +163,10 @@ export default function MultiplayerResults({ players, guesses, verses, room, myI
                               g.guess_verse === verse.verse;
                             return (
                               <div key={g.profile_id} className={`flex items-center gap-3 px-4 py-2.5 ${isMe ? 'bg-white/[0.025]' : ''}`}>
-                                <div className="w-6 h-6 rounded-full bg-white/8 flex items-center justify-center text-xs flex-shrink-0">
-                                  {player?.profiles?.avatar_emoji ?? (
+                                <div className="w-6 h-6 rounded-full bg-white/8 flex items-center justify-center text-white/60 flex-shrink-0">
+                                  {isIconKey(player?.profiles?.avatar_emoji ?? null) ? (
+                                    <AvatarIcon iconKey={player?.profiles?.avatar_emoji} size={14} />
+                                  ) : (
                                     <span className="text-[10px] font-bold text-white/30">
                                       {(player?.username ?? '?')[0].toUpperCase()}
                                     </span>
@@ -173,7 +179,11 @@ export default function MultiplayerResults({ players, guesses, verses, room, myI
                                   </span>
                                   <div className={`text-xs font-semibold ${correct ? 'text-[#c9a644]' : 'text-white/70'}`}>
                                     {g.guess_book_name} {g.guess_chapter}:{g.guess_verse}
-                                    {correct && <span className="text-[#c9a644] ml-1">✓</span>}
+                                    {correct && (
+                              <svg className="inline w-3.5 h-3.5 text-[#c9a644] ml-1 mb-0.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                              </svg>
+                            )}
                                   </div>
                                 </div>
                                 <div className="text-sm font-bold tabular-nums flex-shrink-0" style={{ color: getScoreColor(g.score) }}>

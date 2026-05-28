@@ -25,9 +25,9 @@ export default function RoundProgress({ total, current, scores }: Props) {
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all duration-300 ${
                 isDone
-                  ? 'bg-amber-500 border-amber-500 text-black'
+                  ? 'bg-[#c9a644] border-[#c9a644] text-[#0d0b09]'
                   : isActive
-                  ? 'border-amber-400 text-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.4)]'
+                  ? 'border-[#c9a644] text-[#c9a644] shadow-[0_0_12px_rgba(201,166,68,0.4)]'
                   : 'border-white/20 text-white/30'
               }`}
             >
@@ -37,7 +37,7 @@ export default function RoundProgress({ total, current, scores }: Props) {
               <motion.span
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-[10px] text-amber-400 font-semibold"
+                className="text-[10px] text-[#c9a644] font-semibold"
               >
                 {scores[i].toLocaleString()}
               </motion.span>

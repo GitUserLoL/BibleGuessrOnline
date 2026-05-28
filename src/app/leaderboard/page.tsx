@@ -2,6 +2,8 @@ import { getLeaderboard } from '@/lib/actions';
 import type { GameMode, Difficulty } from '@/types';
 import { getScoreColor } from '@/lib/scoring';
 import Link from 'next/link';
+import AvatarIcon from '@/components/ui/AvatarIcon';
+import { isIconKey } from '@/lib/avatarIcons';
 
 interface SearchParams {
   mode?: string;
@@ -126,8 +128,10 @@ export default async function LeaderboardPage({ searchParams }: { searchParams: 
                 }`}>
                   {i + 1}
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-lg flex-shrink-0">
-                  {avatarEmoji ?? (
+                <div className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-white/60 flex-shrink-0">
+                  {isIconKey(avatarEmoji) ? (
+                    <AvatarIcon iconKey={avatarEmoji} size={18} />
+                  ) : (
                     <span className="text-sm font-bold text-white/50">{username[0]?.toUpperCase() ?? '?'}</span>
                   )}
                 </div>

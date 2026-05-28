@@ -60,10 +60,14 @@ function LoginForm() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <div className="text-4xl mb-3">✝</div>
+          <div className="flex justify-center mb-3">
+            <svg className="w-10 h-10 text-[#c9a644]/60" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16M5 9h14" />
+            </svg>
+          </div>
           <h1 className="text-2xl font-black text-white">Sign in</h1>
           {guestId && (
-            <p className="text-sm text-amber-400/80 mt-2">
+            <p className="text-sm text-[#c9a644]/80 mt-2">
               Your guest progress will be merged into your account.
             </p>
           )}
@@ -98,9 +102,13 @@ function LoginForm() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-6 bg-amber-500/10 border border-amber-500/30 rounded-xl"
+              className="text-center py-6 bg-[#c9a644]/10 border border-[#c9a644]/30 rounded-xl"
             >
-              <div className="text-2xl mb-2">📬</div>
+              <div className="flex justify-center mb-2">
+                <svg className="w-8 h-8 text-[#c9a644]/70" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+              </div>
               <div className="text-white font-semibold">Check your email</div>
               <div className="text-white/50 text-sm mt-1">We sent a magic link to {email}</div>
             </motion.div>
@@ -112,12 +120,12 @@ function LoginForm() {
                 onChange={e => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 focus:bg-white/8 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a644]/50 focus:bg-white/8 transition-colors"
               />
               <button
                 type="submit"
                 disabled={loading || !email}
-                className="w-full py-3 rounded-xl bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors disabled:opacity-50"
+                className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold hover:bg-[#d4b860] transition-colors disabled:opacity-50"
               >
                 {loading ? 'Sending…' : 'Send magic link'}
               </button>

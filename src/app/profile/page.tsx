@@ -19,7 +19,7 @@ export default async function ProfilePage() {
     <ProfileClient
       userId={user.id}
       initialUsername={profile.username}
-      initialEmoji={profile.avatar_emoji ?? '✝️'}
+      initialEmoji={profile.avatar_emoji ?? 'cross'}
       nameChangesUsed={usedThisMonth}
     />
   );

@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
+import AvatarIcon from '@/components/ui/AvatarIcon';
+import { isIconKey } from '@/lib/avatarIcons';
 
 interface Profile {
   username: string;
@@ -73,11 +75,13 @@ export default function AuthButton() {
     <div className="relative">
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-9 h-9 rounded-full bg-[#c9a644]/10 border border-[#c9a644]/30 flex items-center justify-center hover:bg-[#c9a644]/20 transition-colors text-xl"
+        className="w-9 h-9 rounded-full bg-[#c9a644]/10 border border-[#c9a644]/30 flex items-center justify-center hover:bg-[#c9a644]/20 transition-colors text-[#c9a644]"
         title={displayName}
       >
-        {avatar ?? (
-          <span className="text-[#c9a644] text-xs font-black">
+        {isIconKey(avatar) ? (
+          <AvatarIcon iconKey={avatar} size={18} />
+        ) : (
+          <span className="text-xs font-black">
             {displayName[0].toUpperCase()}
           </span>
         )}
@@ -93,7 +97,13 @@ export default function AuthButton() {
             className="absolute right-0 top-11 w-52 bg-[#181411] border border-white/8 rounded-xl shadow-2xl overflow-hidden z-50"
           >
             <div className="px-4 py-3 border-b border-white/8 flex items-center gap-3">
-              <div className="text-2xl">{avatar ?? displayName[0].toUpperCase()}</div>
+              <div className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-white/70 flex-shrink-0">
+                {isIconKey(avatar) ? (
+                  <AvatarIcon iconKey={avatar} size={18} />
+                ) : (
+                  <span className="text-xs font-bold text-white/50">{displayName[0].toUpperCase()}</span>
+                )}
+              </div>
               <div className="min-w-0">
                 <div className="text-sm text-white font-semibold truncate">{displayName}</div>
                 <div className="text-xs text-white/35 truncate">{user.email}</div>

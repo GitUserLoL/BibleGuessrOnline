@@ -7,6 +7,8 @@ import { submitRoomGuess, advanceRound, endRoom } from '@/lib/actions';
 import { getScoreColor } from '@/lib/scoring';
 import VerseDisplay from '@/components/game/VerseDisplay';
 import GuessSelector from '@/components/game/GuessSelector';
+import AvatarIcon from '@/components/ui/AvatarIcon';
+import { isIconKey } from '@/lib/avatarIcons';
 
 interface Room {
   id: string; host_id: string; game_mode: string; current_round: number;
@@ -166,8 +168,10 @@ export default function MultiplayerGame({
                 className="flex items-center gap-2"
               >
                 <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${guessedThisRound ? 'bg-[#6dbf8a]' : 'bg-white/15'}`} />
-                <div className="w-7 h-7 rounded-full bg-white/8 flex items-center justify-center text-base flex-shrink-0">
-                  {p.profiles?.avatar_emoji ?? (
+                <div className="w-7 h-7 rounded-full bg-white/8 flex items-center justify-center text-white/60 flex-shrink-0">
+                  {isIconKey(p.profiles?.avatar_emoji ?? null) ? (
+                    <AvatarIcon iconKey={p.profiles?.avatar_emoji} size={16} />
+                  ) : (
                     <span className="text-[10px] font-bold text-white/35">{p.username[0].toUpperCase()}</span>
                   )}
                 </div>
@@ -212,8 +216,10 @@ export default function MultiplayerGame({
                     const score = guess?.score ?? 0;
                     return (
                       <div key={p.profile_id} className="flex items-center gap-2">
-                        <div className="text-base">
-                          {p.profiles?.avatar_emoji ?? (
+                        <div className="w-7 h-7 rounded-full bg-white/8 flex items-center justify-center text-white/60 flex-shrink-0">
+                          {isIconKey(p.profiles?.avatar_emoji ?? null) ? (
+                            <AvatarIcon iconKey={p.profiles?.avatar_emoji} size={16} />
+                          ) : (
                             <span className="text-xs font-bold text-white/35">{p.username[0].toUpperCase()}</span>
                           )}
                         </div>
