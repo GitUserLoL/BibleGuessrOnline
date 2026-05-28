@@ -42,14 +42,28 @@ export default function MultiplayerPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
+  // Resolved player identity fetched once on mount
+  const [playerId, setPlayerId] = useState('');
+  const [playerName, setPlayerName] = useState('');
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(async ({ data }) => {
       if (data.user) {
-        setUsername(data.user.user_metadata?.full_name ?? data.user.email?.split('@')[0] ?? 'Player');
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', data.user.id)
+          .single();
+        const name = profile?.username ?? data.user.user_metadata?.full_name ?? data.user.email?.split('@')[0] ?? 'Player';
+        setPlayerId(data.user.id);
+        setPlayerName(name);
+        setUsername(name);
       } else {
-        setUsername(getPlayerName());
+        const guestName = getPlayerName();
+        setPlayerId(getPlayerId());
+        setPlayerName(guestName);
+        setUsername(guestName);
       }
     });
   }, []);
@@ -58,13 +72,6 @@ export default function MultiplayerPage() {
     setLoading(true);
     setError('');
     try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      const playerId = user?.id ?? getPlayerId();
-      const playerName = user
-        ? (user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'Player')
-        : getPlayerName();
-
       const roomId = await createRoom(playerId, playerName, mode, duration, difficulty);
       router.push(`/room/${roomId}`);
     } catch {
@@ -80,13 +87,6 @@ export default function MultiplayerPage() {
     setLoading(true);
     setError('');
     try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      const playerId = user?.id ?? getPlayerId();
-      const playerName = user
-        ? (user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'Player')
-        : getPlayerName();
-
       const result = await joinRoom(joinCode.trim().toUpperCase(), playerId, playerName);
       if (result.error) { setError(result.error); return; }
       router.push(`/room/${joinCode.trim().toUpperCase()}`);
