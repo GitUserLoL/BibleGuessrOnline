@@ -75,16 +75,21 @@ export default function GameResults({ results, mode, seed, difficulty, onPlayAga
     >
       {/* Score header */}
       <div className="text-center">
-        <div className="text-white/30 text-sm uppercase tracking-widest mb-2">{modeLabel} · {difficultyLabel} · 5 Rounds</div>
+        <div className="label-caps mb-3">
+          {modeLabel} · {difficultyLabel} · 5 Rounds
+        </div>
         <motion.div
           initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.1 }}
-          className="text-7xl font-black text-[#c9a644] mb-1 tabular-nums"
+          className="text-7xl font-black text-[var(--gold)] mb-1 tabular-nums"
+          style={{ textShadow: '3px 3px 0 #3a2a00' }}
         >
           {total.toLocaleString()}
         </motion.div>
-        <div className="text-white/35 text-sm">out of 25,000</div>
+        <div className="text-[rgba(237,232,220,0.35)] text-xs uppercase tracking-widest font-semibold">
+          out of 25,000
+        </div>
       </div>
 
       {/* Per-round breakdown */}
@@ -95,20 +100,20 @@ export default function GameResults({ results, mode, seed, difficulty, onPlayAga
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 + i * 0.08 }}
-            className="flex items-center gap-4 bg-white/[0.02] border border-white/8 rounded-xl px-4 py-3"
+            className="r-panel flex items-center gap-4 px-4 py-3"
           >
-            <div className="w-6 h-6 rounded-full bg-white/8 flex items-center justify-center text-xs text-white/35 flex-shrink-0 tabular-nums">
+            <div className="w-6 h-6 border border-[var(--bl)] flex items-center justify-center text-xs text-[rgba(237,232,220,0.35)] flex-shrink-0 tabular-nums font-bold bg-[var(--bg-deep)]">
               {i + 1}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-white/80 text-sm font-semibold truncate">
+              <div className="text-[rgba(237,232,220,0.8)] text-sm font-semibold truncate">
                 {r.verse.book_name} {r.verse.chapter}:{r.verse.verse}
               </div>
-              <div className="text-white/30 text-xs truncate">
+              <div className="text-[rgba(237,232,220,0.3)] text-xs truncate">
                 Your guess: {r.guessBookName} {r.guessChapter}:{r.guessVerse}
               </div>
             </div>
-            <div className="font-bold text-sm flex-shrink-0 tabular-nums" style={{ color: getScoreColor(r.score) }}>
+            <div className="font-black text-sm flex-shrink-0 tabular-nums" style={{ color: getScoreColor(r.score) }}>
               {r.score.toLocaleString()}
             </div>
           </motion.div>
@@ -126,22 +131,24 @@ export default function GameResults({ results, mode, seed, difficulty, onPlayAga
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#c9a644]/8 border border-[#c9a644]/25 rounded-xl p-4 text-center"
+            className="r-panel-gold p-4 text-center"
           >
-            <div className="text-xs text-white/40 mb-2">Share this link — friends play the same verses</div>
+            <div className="label-caps mb-2">Share this link — friends play the same verses</div>
             <button
               onClick={copyLink}
-              className="text-[#c9a644] text-sm font-mono break-all hover:text-[#d4b860] transition-colors"
+              className="text-[var(--gold)] text-sm font-mono break-all hover:text-[var(--gold-light)] transition-colors"
             >
               {challengeLink}
             </button>
-            <div className="text-xs text-white/25 mt-1">{copied ? 'Copied!' : 'Tap to copy'}</div>
+            <div className="text-[rgba(237,232,220,0.25)] text-xs mt-1 uppercase tracking-wider font-semibold">
+              {copied ? '✓ Copied!' : 'Tap to copy'}
+            </div>
           </motion.div>
         ) : (
           <button
             onClick={handleCreateChallenge}
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-white/[0.04] border border-white/8 text-white/70 font-semibold hover:bg-white/8 hover:text-white transition-colors disabled:opacity-40"
+            className="w-full py-3 r-btn text-xs font-semibold uppercase tracking-widest text-[rgba(237,232,220,0.65)] hover:text-[rgba(237,232,220,0.9)] disabled:opacity-40"
           >
             Challenge a friend
           </button>
@@ -149,14 +156,14 @@ export default function GameResults({ results, mode, seed, difficulty, onPlayAga
 
         {user === 'loading' ? null : user ? (
           submitted ? (
-            <div className="text-center text-[#c9a644]/80 text-sm py-2">
-              Score saved to leaderboard
+            <div className="text-center text-[var(--gold)] text-xs uppercase tracking-widest font-semibold py-2">
+              ✓ Score saved to leaderboard
             </div>
           ) : (
             <button
               onClick={handleSubmitScore}
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-white/[0.04] border border-white/8 text-white/70 font-semibold hover:bg-white/8 hover:text-white transition-colors disabled:opacity-40"
+              className="w-full py-3 r-btn text-xs font-semibold uppercase tracking-widest text-[rgba(237,232,220,0.65)] hover:text-[rgba(237,232,220,0.9)] disabled:opacity-40"
             >
               {loading ? 'Saving…' : 'Save to leaderboard'}
             </button>
@@ -164,7 +171,7 @@ export default function GameResults({ results, mode, seed, difficulty, onPlayAga
         ) : (
           <Link
             href={`/auth/login?next=${encodeURIComponent('/')}`}
-            className="w-full py-3 rounded-xl bg-white/[0.04] border border-white/8 text-white/50 font-semibold hover:bg-white/8 transition-colors text-center text-sm"
+            className="w-full py-3 r-btn text-xs font-semibold uppercase tracking-widest text-[rgba(237,232,220,0.45)] hover:text-[rgba(237,232,220,0.75)] transition-colors text-center"
           >
             Sign in to save your score
           </Link>
@@ -172,8 +179,8 @@ export default function GameResults({ results, mode, seed, difficulty, onPlayAga
 
         <motion.button
           onClick={onPlayAgain}
-          whileTap={{ scale: 0.97 }}
-          className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold hover:bg-[#d4b860] transition-colors"
+          whileTap={{ scale: 0.98 }}
+          className="w-full py-3 r-btn-gold text-sm uppercase tracking-widest"
         >
           Play again
         </motion.button>

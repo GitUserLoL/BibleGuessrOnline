@@ -107,13 +107,13 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, diffi
     <div className="w-full max-w-4xl mx-auto px-4 py-6 flex flex-col gap-6">
       {/* Header row */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => { window.location.href = '/'; }}
-            className="flex items-center gap-1 text-white/20 hover:text-white/50 transition-colors text-xs"
+            className="flex items-center gap-1.5 text-[rgba(237,232,220,0.2)] hover:text-[rgba(237,232,220,0.55)] transition-colors text-xs uppercase tracking-widest font-semibold"
             title="Back to home"
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
             <span className="hidden sm:inline">Home</span>
@@ -122,17 +122,18 @@ export default function GameClient({ verses, meta, mode, seed, verseCount, diffi
         </div>
         <div className="flex items-center gap-3">
           {difficulty === 'easy' && (
-            <span className="text-[10px] font-bold tracking-widest text-[#c9a644]/50 uppercase border border-[#c9a644]/20 rounded px-1.5 py-0.5">
+            <span className="label-caps border border-[var(--gold-dim)] px-2 py-0.5 text-[var(--gold)]">
               Easy
             </span>
           )}
           <div className="text-right">
-            <div className="text-xs text-white/30 uppercase tracking-widest">Score</div>
+            <div className="label-caps mb-0.5">Score</div>
             <motion.div
               key={totalScore}
               initial={{ scale: 1.15 }}
               animate={{ scale: 1 }}
-              className="text-2xl font-black text-[#c9a644] tabular-nums"
+              className="text-2xl font-black text-[var(--gold)] tabular-nums"
+              style={{ textShadow: '1px 1px 0 #3a2a00' }}
             >
               {totalScore.toLocaleString()}
             </motion.div>

@@ -56,7 +56,7 @@ export default function ScoreReveal({ result, onNext, isLast }: Props) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 220, damping: 18 }}
           className="text-6xl font-black mb-1 tabular-nums"
-          style={{ color }}
+          style={{ color, textShadow: `2px 2px 0 rgba(0,0,0,0.5)` }}
         >
           {displayScore.toLocaleString()}
         </motion.div>
@@ -68,7 +68,7 @@ export default function ScoreReveal({ result, onNext, isLast }: Props) {
               : { opacity: 1, y: 0 }
           }
           transition={{ delay: 0.15, duration: isHighScore ? 0.45 : 0.2 }}
-          className="text-base font-semibold"
+          className="text-sm font-bold uppercase tracking-widest"
           style={{ color }}
         >
           {label}
@@ -76,15 +76,15 @@ export default function ScoreReveal({ result, onNext, isLast }: Props) {
       </div>
 
       {/* Comparison */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.28, ease: [0.25, 1, 0.5, 1] }}
-          className="bg-white/[0.03] border border-white/8 rounded-xl p-4 text-center"
+          className="r-panel p-4 text-center"
         >
-          <div className="text-xs text-white/30 uppercase tracking-widest mb-2">Your Guess</div>
-          <div className="text-[#c9a644] font-bold text-lg">
+          <div className="label-caps mb-2">Your Guess</div>
+          <div className="text-[var(--gold)] font-bold text-sm md:text-base">
             {result.guessBookName} {result.guessChapter}:{result.guessVerse}
           </div>
         </motion.div>
@@ -92,10 +92,10 @@ export default function ScoreReveal({ result, onNext, isLast }: Props) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.33, duration: 0.28, ease: [0.25, 1, 0.5, 1] }}
-          className="bg-[#c9a644]/8 border border-[#c9a644]/20 rounded-xl p-4 text-center"
+          className="r-panel-gold p-4 text-center"
         >
-          <div className="text-xs text-white/30 uppercase tracking-widest mb-2">Correct Answer</div>
-          <div className="text-[#d4b860] font-bold text-lg">
+          <div className="label-caps mb-2 text-[var(--gold-light)]">Answer</div>
+          <div className="text-[var(--gold-light)] font-bold text-sm md:text-base">
             {result.verse.book_name} {result.verse.chapter}:{result.verse.verse}
           </div>
         </motion.div>
@@ -105,9 +105,12 @@ export default function ScoreReveal({ result, onNext, isLast }: Props) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.42 }}
-        className="text-center text-white/30 text-sm"
+        className="text-center text-[rgba(237,232,220,0.3)] text-xs uppercase tracking-widest font-semibold"
       >
-        Distance: <span className="text-white/60 font-semibold tabular-nums">{distance.toLocaleString()} verse{distance !== 1 ? 's' : ''}</span>
+        Distance:{' '}
+        <span className="text-[rgba(237,232,220,0.6)] tabular-nums">
+          {distance.toLocaleString()} verse{distance !== 1 ? 's' : ''}
+        </span>
       </motion.div>
 
       <motion.button
@@ -115,8 +118,8 @@ export default function ScoreReveal({ result, onNext, isLast }: Props) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.45, duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
-        whileTap={{ scale: 0.97 }}
-        className="w-full py-3 rounded-xl bg-[#c9a644] text-[#0d0b09] font-bold text-base hover:bg-[#d4b860] transition-colors shadow-[0_0_30px_rgba(201,166,68,0.18)]"
+        whileTap={{ scale: 0.98 }}
+        className="w-full py-3 r-btn-gold text-sm uppercase tracking-widest"
       >
         {isLast ? 'See Final Results' : 'Next Round'}
       </motion.button>

@@ -2,43 +2,152 @@
 
 :root {
   --bg-deep: #0d0b09;
-  --bg-card: #181411;
-  --bg-surface: #221e17;
+  --bg-card: #161210;
+  --bg-surface: #1d1710;
+  --bg-raised: #252018;
   --gold: #c9a644;
   --gold-light: #d4b860;
+  --gold-dim: #7a5e1a;
+  --gold-muted: rgba(201, 166, 68, 0.12);
+  --bl: #3a2e22;
+  --bd: #050302;
+  --border-mid: #2a2018;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-grotesk: var(--font-space-grotesk);
+  --font-pixel: var(--font-press-start);
 }
 
-html,
-body {
+html, body {
   background-color: var(--bg-deep);
   color: #ede8dc;
   min-height: 100vh;
 }
 
-/* Subtle scrollbar */
-::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 2px;
+/* ── Retro Panel (beveled outset) ─────────────────────── */
+.r-panel {
+  background-color: var(--bg-card);
+  border-top: 2px solid var(--bl);
+  border-left: 2px solid var(--bl);
+  border-bottom: 2px solid var(--bd);
+  border-right: 2px solid var(--bd);
 }
 
-/* Warm gold glow at top */
+/* ── Recessed Panel (beveled inset) ──────────────────── */
+.r-panel-inset {
+  background-color: var(--bg-deep);
+  border-top: 2px solid var(--bd);
+  border-left: 2px solid var(--bd);
+  border-bottom: 2px solid var(--bl);
+  border-right: 2px solid var(--bl);
+}
+
+/* ── Gold-bordered Panel ─────────────────────────────── */
+.r-panel-gold {
+  background-color: var(--bg-card);
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 16px rgba(201, 166, 68, 0.1), inset 0 0 0 1px var(--gold-dim);
+}
+
+/* ── Retro Button ────────────────────────────────────── */
+.r-btn {
+  background-color: var(--bg-raised);
+  color: #ede8dc;
+  border-top: 2px solid var(--bl);
+  border-left: 2px solid var(--bl);
+  border-bottom: 3px solid var(--bd);
+  border-right: 3px solid var(--bd);
+  transition: background-color 0.1s, border 0.07s ease, transform 0.07s ease;
+}
+.r-btn:hover:not(:disabled) {
+  background-color: var(--bg-surface);
+}
+.r-btn:active:not(:disabled) {
+  border-top: 3px solid var(--bd);
+  border-left: 3px solid var(--bd);
+  border-bottom: 2px solid var(--bl);
+  border-right: 2px solid var(--bl);
+  transform: translate(1px, 1px);
+}
+
+/* ── Gold Primary Button ─────────────────────────────── */
+.r-btn-gold {
+  background-color: var(--gold);
+  color: #0d0b09;
+  font-weight: 700;
+  border-top: 2px solid var(--gold-light);
+  border-left: 2px solid var(--gold-light);
+  border-bottom: 3px solid var(--gold-dim);
+  border-right: 3px solid var(--gold-dim);
+  transition: background-color 0.1s, border 0.07s ease, transform 0.07s ease;
+}
+.r-btn-gold:hover:not(:disabled) {
+  background-color: var(--gold-light);
+}
+.r-btn-gold:active:not(:disabled) {
+  border-top: 3px solid var(--gold-dim);
+  border-left: 3px solid var(--gold-dim);
+  border-bottom: 2px solid var(--gold-light);
+  border-right: 2px solid var(--gold-light);
+  transform: translate(1px, 1px);
+}
+.r-btn-gold:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Recessed Input ──────────────────────────────────── */
+.r-input {
+  background-color: var(--bg-deep);
+  color: #ede8dc;
+  border-top: 2px solid var(--bd);
+  border-left: 2px solid var(--bd);
+  border-bottom: 2px solid var(--bl);
+  border-right: 2px solid var(--bl);
+  outline: none;
+  transition: border-color 0.1s;
+}
+.r-input:focus {
+  border-color: var(--gold-dim);
+}
+.r-input::placeholder {
+  color: rgba(237, 232, 220, 0.25);
+}
+.r-input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── BibleGuessr Logo ────────────────────────────────── */
+.logo-text {
+  font-family: var(--font-pixel), 'Courier New', monospace;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #3a2a00;
+  letter-spacing: 0.02em;
+}
+
+/* ── Section label style ─────────────────────────────── */
+.label-caps {
+  font-family: var(--font-grotesk), var(--font-sans), sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(201, 166, 68, 0.5);
+  font-size: 10px;
+}
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bl); }
+
+/* ── Warm gold glow at top ───────────────────────────── */
 body::after {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 400px;
-  background: radial-gradient(ellipse 80% 200px at 50% -50px, rgba(201,166,68,0.06) 0%, transparent 100%);
+  background: radial-gradient(ellipse 80% 200px at 50% -50px, rgba(201,166,68,0.07) 0%, transparent 100%);
   pointer-events: none;
   z-index: 0;
 }

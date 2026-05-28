@@ -23,16 +23,13 @@ interface BookListProps {
   compact?: boolean;
 }
 
-// Extracted outside GuessSelector so React sees a stable component type across renders.
-// Previously defined inline, which caused the entire book list to remount on every
-// state change (chapter/verse selection), discarding and recreating all 66 DOM nodes.
 const BookList = memo(function BookList({ otBooks, ntBooks, mode, selectedBook, onSelect, compact }: BookListProps) {
   return (
     <>
       {otBooks.length > 0 && (
         <>
           {mode === 'full' && (
-            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#c9a644]/60 uppercase sticky top-0 bg-[#181411]/95 backdrop-blur-sm">
+            <div className="px-3 py-2 label-caps sticky top-0 bg-[var(--bg-card)]/95 backdrop-blur-sm border-b border-[var(--bl)]">
               Old Testament
             </div>
           )}
@@ -40,12 +37,15 @@ const BookList = memo(function BookList({ otBooks, ntBooks, mode, selectedBook, 
             <button
               key={book.id}
               onClick={() => onSelect(book)}
-              className={`w-full text-left px-4 transition-colors ${compact ? 'py-1.5 text-sm' : 'py-3 text-base'} ${
+              className={`w-full text-left flex items-center gap-2 transition-colors ${compact ? 'px-3 py-1.5 text-xs' : 'px-4 py-2.5 text-sm'} ${
                 selectedBook?.id === book.id
-                  ? 'bg-[#c9a644]/15 text-[#d4b860] font-semibold'
-                  : 'text-white/65 hover:bg-white/8 hover:text-white/90'
+                  ? 'bg-[var(--gold-muted)] text-[var(--gold)] font-semibold border-l-2 border-[var(--gold)]'
+                  : 'text-[rgba(237,232,220,0.6)] hover:bg-[var(--bg-surface)] hover:text-[rgba(237,232,220,0.9)] border-l-2 border-transparent'
               }`}
             >
+              {selectedBook?.id === book.id && (
+                <span className="text-[var(--gold)] text-xs leading-none">▶</span>
+              )}
               {book.name}
             </button>
           ))}
@@ -54,7 +54,7 @@ const BookList = memo(function BookList({ otBooks, ntBooks, mode, selectedBook, 
       {ntBooks.length > 0 && (
         <>
           {mode === 'full' && (
-            <div className="px-3 py-1.5 text-[10px] font-bold tracking-widest text-[#c9a644]/60 uppercase sticky top-0 bg-[#181411]/95 backdrop-blur-sm">
+            <div className="px-3 py-2 label-caps sticky top-0 bg-[var(--bg-card)]/95 backdrop-blur-sm border-b border-[var(--bl)] border-t border-t-[var(--bl)]">
               New Testament
             </div>
           )}
@@ -62,12 +62,15 @@ const BookList = memo(function BookList({ otBooks, ntBooks, mode, selectedBook, 
             <button
               key={book.id}
               onClick={() => onSelect(book)}
-              className={`w-full text-left px-4 transition-colors ${compact ? 'py-1.5 text-sm' : 'py-3 text-base'} ${
+              className={`w-full text-left flex items-center gap-2 transition-colors ${compact ? 'px-3 py-1.5 text-xs' : 'px-4 py-2.5 text-sm'} ${
                 selectedBook?.id === book.id
-                  ? 'bg-[#c9a644]/15 text-[#d4b860] font-semibold'
-                  : 'text-white/65 hover:bg-white/8 hover:text-white/90'
+                  ? 'bg-[var(--gold-muted)] text-[var(--gold)] font-semibold border-l-2 border-[var(--gold)]'
+                  : 'text-[rgba(237,232,220,0.6)] hover:bg-[var(--bg-surface)] hover:text-[rgba(237,232,220,0.9)] border-l-2 border-transparent'
               }`}
             >
+              {selectedBook?.id === book.id && (
+                <span className="text-[var(--gold)] text-xs leading-none">▶</span>
+              )}
               {book.name}
             </button>
           ))}
@@ -76,6 +79,45 @@ const BookList = memo(function BookList({ otBooks, ntBooks, mode, selectedBook, 
     </>
   );
 });
+
+function NumberGrid({
+  count,
+  selected,
+  onSelect,
+}: {
+  count: number;
+  selected: number | null;
+  onSelect: (n: number) => void;
+}) {
+  return (
+    <div className="p-2 grid grid-cols-5 gap-1.5">
+      {Array.from({ length: count }, (_, i) => i + 1).map(n => (
+        <button
+          key={n}
+          onClick={() => onSelect(n)}
+          className={`aspect-square text-xs font-bold transition-all duration-100 ${
+            selected === n
+              ? 'bg-[var(--gold)] text-[#0d0b09] border-t-2 border-l-2 border-[var(--gold-light)] border-b-2 border-r-2 border-b-[var(--gold-dim)] border-r-[var(--gold-dim)]'
+              : 'r-btn text-[rgba(237,232,220,0.5)] hover:text-[rgba(237,232,220,0.9)]'
+          }`}
+        >
+          {n}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function LockedPanel({ message }: { message: string }) {
+  return (
+    <div className="h-full flex flex-col items-center justify-center gap-2 text-[rgba(237,232,220,0.2)]">
+      <svg className="w-5 h-5 opacity-50" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+      </svg>
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-center px-4">{message}</span>
+    </div>
+  );
+}
 
 export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled }: Props) {
   const [selectedBook, setSelectedBook] = useState<BookStructure | null>(null);
@@ -92,7 +134,6 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
     ? selectedBook.chapterVerseCounts[selectedChapter - 1]
     : 0;
 
-  // Stable reference — setState functions from useState are always stable.
   const handleBookSelect = useCallback((book: BookStructure) => {
     setSelectedBook(book);
     setSelectedChapter(null);
@@ -118,37 +159,38 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
   const canSubmit = !!selectedBook && !!selectedChapter && !!selectedVerse && !disabled;
 
   const steps: { id: Step; label: string; value: string | null }[] = [
-    { id: 'book', label: 'Book', value: selectedBook?.name ?? null },
+    { id: 'book',    label: 'Book',    value: selectedBook?.name ?? null },
     { id: 'chapter', label: 'Chapter', value: selectedChapter ? String(selectedChapter) : null },
-    { id: 'verse', label: 'Verse', value: selectedVerse ? String(selectedVerse) : null },
+    { id: 'verse',   label: 'Verse',   value: selectedVerse ? String(selectedVerse) : null },
   ];
 
   return (
     <div className="w-full flex flex-col gap-3">
       {/* Reference preview + submit */}
       <div className="flex items-center justify-between gap-3">
-        <div className="text-sm text-white/50 truncate">
-          {selectedBook
-            ? `${selectedBook.name}${selectedChapter ? ` ${selectedChapter}` : ''}${selectedVerse ? `:${selectedVerse}` : ''}`
-            : 'Select a verse'}
+        <div className="r-panel-inset px-3 py-2 flex-1 min-w-0">
+          <span className={`text-sm font-mono tabular-nums ${selectedBook ? 'text-[var(--gold)]' : 'text-[rgba(237,232,220,0.25)]'}`}>
+            {selectedBook
+              ? `${selectedBook.name}${selectedChapter ? ` ${selectedChapter}` : ''}${selectedVerse ? `:${selectedVerse}` : ''}`
+              : 'Select a verse…'}
+          </span>
         </div>
         <motion.button
           onClick={handleSubmit}
           disabled={!canSubmit}
-          whileTap={{ scale: 0.95 }}
-          className={`shrink-0 px-5 py-2 rounded-lg font-bold text-sm transition-all duration-200 ${
-            canSubmit
-              ? 'bg-[#c9a644] text-[#0d0b09] hover:bg-[#d4b860] shadow-[0_0_20px_rgba(201,166,68,0.2)]'
-              : 'bg-white/8 text-white/25 cursor-not-allowed'
+          whileTap={canSubmit ? { scale: 0.97 } : {}}
+          className={`shrink-0 px-5 py-2 text-sm font-bold uppercase tracking-widest transition-all ${
+            canSubmit ? 'r-btn-gold' : 'r-btn text-[rgba(237,232,220,0.25)] cursor-not-allowed opacity-40'
           }`}
         >
-          Submit Guess
+          Submit
         </motion.button>
       </div>
 
       {/* ── MOBILE: tabbed step-by-step ── */}
       <div className="md:hidden flex flex-col gap-2">
-        <div className="flex gap-1 p-1 bg-white/5 rounded-xl border border-white/10">
+        {/* Step tabs */}
+        <div className="r-panel flex">
           {steps.map(step => (
             <button
               key={step.id}
@@ -157,17 +199,17 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
                 if (step.id === 'verse' && !selectedChapter) return;
                 setActiveStep(step.id);
               }}
-              className={`flex-1 py-2 px-1 rounded-lg text-xs font-semibold transition-all duration-150 flex flex-col items-center gap-0.5 ${
+              className={`flex-1 py-2.5 px-1 text-xs font-semibold uppercase tracking-widest transition-all flex flex-col items-center gap-0.5 ${
                 activeStep === step.id
-                  ? 'bg-white/12 text-white'
+                  ? 'bg-[var(--bg-raised)] text-[#ede8dc]'
                   : step.value
-                  ? 'text-[#c9a644]'
-                  : 'text-white/25'
+                  ? 'text-[var(--gold)]'
+                  : 'text-[rgba(237,232,220,0.25)]'
               }`}
             >
               <span>{step.label}</span>
               {step.value && (
-                <span className="text-[10px] font-normal opacity-80 truncate w-full text-center px-1">
+                <span className="text-[9px] font-mono opacity-80 truncate w-full text-center">
                   {step.value}
                 </span>
               )}
@@ -175,7 +217,7 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
           ))}
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-xl overflow-y-auto" style={{ height: 240 }}>
+        <div className="r-panel overflow-y-auto" style={{ height: 240 }}>
           <AnimatePresence mode="wait">
             {activeStep === 'book' && (
               <motion.div key="book" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -189,45 +231,13 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
               </motion.div>
             )}
             {activeStep === 'chapter' && selectedBook && (
-              <motion.div
-                key="chapter"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="p-3 grid grid-cols-5 gap-2"
-              >
-                {Array.from({ length: maxChapters }, (_, i) => i + 1).map(ch => (
-                  <button
-                    key={ch}
-                    onClick={() => handleChapterSelect(ch)}
-                    className={`aspect-square rounded-xl text-sm font-semibold transition-all ${
-                      selectedChapter === ch ? 'bg-[#c9a644] text-[#0d0b09]' : 'bg-white/[0.04] text-white/55 hover:bg-white/10'
-                    }`}
-                  >
-                    {ch}
-                  </button>
-                ))}
+              <motion.div key="chapter" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <NumberGrid count={maxChapters} selected={selectedChapter} onSelect={handleChapterSelect} />
               </motion.div>
             )}
             {activeStep === 'verse' && selectedChapter && (
-              <motion.div
-                key="verse"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="p-3 grid grid-cols-5 gap-2"
-              >
-                {Array.from({ length: maxVerses }, (_, i) => i + 1).map(v => (
-                  <button
-                    key={v}
-                    onClick={() => setSelectedVerse(v)}
-                    className={`aspect-square rounded-xl text-sm font-semibold transition-all ${
-                      selectedVerse === v ? 'bg-[#c9a644] text-[#0d0b09]' : 'bg-white/[0.04] text-white/55 hover:bg-white/10'
-                    }`}
-                  >
-                    {v}
-                  </button>
-                ))}
+              <motion.div key="verse" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <NumberGrid count={maxVerses} selected={selectedVerse} onSelect={(v) => setSelectedVerse(v)} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -235,8 +245,10 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
       </div>
 
       {/* ── DESKTOP: 3-panel side by side ── */}
-      <div className="hidden md:grid grid-cols-[200px_1fr_1fr] gap-3 h-64">
-        <div className="bg-white/5 border border-white/10 rounded-xl overflow-y-auto">
+      <div className="hidden md:grid grid-cols-[200px_1fr_1fr] gap-2 h-64">
+        {/* Book panel */}
+        <div className="r-panel overflow-y-auto">
+          <div className="px-3 py-2 label-caps border-b border-[var(--bl)]">Book</div>
           <BookList
             otBooks={otBooks}
             ntBooks={ntBooks}
@@ -247,47 +259,45 @@ export default function GuessSelector({ bibleStructure, mode, onSubmit, disabled
           />
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-xl overflow-y-auto p-2">
+        {/* Chapter panel */}
+        <div className="r-panel overflow-y-auto flex flex-col">
+          <div className="px-3 py-2 label-caps border-b border-[var(--bl)]">Chapter</div>
           <AnimatePresence mode="wait">
             {selectedBook ? (
-              <motion.div key={selectedBook.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid grid-cols-4 gap-1">
-                {Array.from({ length: maxChapters }, (_, i) => i + 1).map(ch => (
-                  <button
-                    key={ch}
-                    onClick={() => handleChapterSelect(ch)}
-                    className={`aspect-square rounded-lg text-xs font-semibold transition-all duration-100 ${
-                      selectedChapter === ch ? 'bg-[#c9a644] text-[#0d0b09]' : 'bg-white/[0.04] text-white/50 hover:bg-white/10 hover:text-white/90'
-                    }`}
-                  >
-                    {ch}
-                  </button>
-                ))}
+              <motion.div
+                key={selectedBook.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex-1"
+              >
+                <NumberGrid count={maxChapters} selected={selectedChapter} onSelect={handleChapterSelect} />
               </motion.div>
             ) : (
-              <div className="h-full flex items-center justify-center text-white/20 text-sm">Select a book</div>
+              <div className="flex-1">
+                <LockedPanel message="Select a book first" />
+              </div>
             )}
           </AnimatePresence>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-xl overflow-y-auto p-2">
+        {/* Verse panel */}
+        <div className="r-panel overflow-y-auto flex flex-col">
+          <div className="px-3 py-2 label-caps border-b border-[var(--bl)]">Verse</div>
           <AnimatePresence mode="wait">
             {selectedChapter && selectedBook ? (
-              <motion.div key={`${selectedBook.id}-${selectedChapter}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid grid-cols-4 gap-1">
-                {Array.from({ length: maxVerses }, (_, i) => i + 1).map(v => (
-                  <button
-                    key={v}
-                    onClick={() => setSelectedVerse(v)}
-                    className={`aspect-square rounded-lg text-xs font-semibold transition-all duration-100 ${
-                      selectedVerse === v ? 'bg-[#c9a644] text-[#0d0b09]' : 'bg-white/[0.04] text-white/50 hover:bg-white/10 hover:text-white/90'
-                    }`}
-                  >
-                    {v}
-                  </button>
-                ))}
+              <motion.div
+                key={`${selectedBook.id}-${selectedChapter}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex-1"
+              >
+                <NumberGrid count={maxVerses} selected={selectedVerse} onSelect={(v) => setSelectedVerse(v)} />
               </motion.div>
             ) : (
-              <div className="h-full flex items-center justify-center text-white/20 text-sm">
-                {selectedBook ? 'Select a chapter' : 'Select a book first'}
+              <div className="flex-1">
+                <LockedPanel message={selectedBook ? 'Select a chapter' : 'Select a book first'} />
               </div>
             )}
           </AnimatePresence>

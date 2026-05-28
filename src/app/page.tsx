@@ -44,10 +44,10 @@ export default function Home() {
         transition={{ duration: 0.5 }}
         className="text-center mb-12"
       >
-        <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white mb-4">
-          Bible<span className="text-[#c9a644]">Guessr</span>
+        <h1 className="logo-text text-4xl md:text-5xl mb-5 leading-tight">
+          BibleGuessr
         </h1>
-        <p className="text-base md:text-lg text-white/45 max-w-sm mx-auto leading-relaxed">
+        <p className="text-sm text-[rgba(237,232,220,0.45)] max-w-xs mx-auto leading-relaxed font-serif">
           A verse appears. Guess which book, chapter, and verse it&apos;s from.
           <br />
           How well do you know the Word?
@@ -59,20 +59,20 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="flex gap-1 p-1 bg-white/[0.03] border border-white/8 rounded-xl mb-8"
+        className="r-panel flex mb-8 w-full max-w-xs"
       >
         {(['hard', 'easy'] as Difficulty[]).map(d => (
           <button
             key={d}
             onClick={() => setDifficulty(d)}
-            className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all duration-150 flex flex-col items-center gap-0.5 ${
+            className={`flex-1 py-2.5 text-xs font-semibold uppercase tracking-widest transition-all duration-150 flex flex-col items-center gap-0.5 ${
               difficulty === d
-                ? 'bg-white/10 text-white'
-                : 'text-white/30 hover:text-white/55'
+                ? 'bg-[var(--bg-raised)] text-[#ede8dc]'
+                : 'text-[rgba(237,232,220,0.3)] hover:text-[rgba(237,232,220,0.55)]'
             }`}
           >
-            <span className="capitalize">{d}</span>
-            <span className="text-[10px] font-normal opacity-60">
+            <span>{d}</span>
+            <span className="text-[9px] font-normal opacity-60 normal-case tracking-normal">
               {d === 'hard' ? 'One verse, no context' : '±10 verses of context'}
             </span>
           </button>
@@ -87,22 +87,27 @@ export default function Home() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12 + i * 0.07 }}
-            whileHover={{ y: -3, scale: 1.015 }}
-            whileTap={{ scale: 0.97 }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => startGame(m.id)}
-            className="group relative flex flex-col gap-3 p-5 rounded-xl border border-white/8 bg-white/[0.02] hover:border-[#c9a644]/30 hover:bg-[#c9a644]/[0.04] transition-all duration-200 text-left cursor-pointer"
+            className="group r-panel flex flex-col gap-3 p-5 hover:bg-[var(--bg-surface)] transition-colors text-left cursor-pointer"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-[#c9a644]/50 tracking-[0.15em] uppercase">{m.abbr}</span>
-              <svg className="w-4 h-4 text-white/15 group-hover:text-[#c9a644] group-hover:translate-x-0.5 transition-all duration-200" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <span className="label-caps">{m.abbr}</span>
+              <svg
+                className="w-3.5 h-3.5 text-[rgba(237,232,220,0.15)] group-hover:text-[var(--gold)] group-hover:translate-x-0.5 transition-all duration-200"
+                fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </div>
             <div>
-              <div className="font-bold text-base text-white/85 group-hover:text-white transition-colors">{m.label}</div>
-              <div className="text-xs text-white/30 mt-0.5">{m.desc}</div>
+              <div className="font-bold text-sm text-[rgba(237,232,220,0.85)] group-hover:text-[#ede8dc] transition-colors">
+                {m.label}
+              </div>
+              <div className="text-xs text-[rgba(237,232,220,0.3)] mt-0.5">{m.desc}</div>
             </div>
-            <div className="text-[11px] text-white/18 font-mono">{m.books}</div>
+            <div className="text-[10px] text-[rgba(237,232,220,0.18)] font-mono">{m.books}</div>
           </motion.button>
         ))}
       </div>
@@ -115,16 +120,14 @@ export default function Home() {
         className="w-full max-w-3xl"
       >
         <div className="flex items-center gap-3 mb-5">
-          <div className="h-px flex-1 bg-white/8" />
-          <span className="text-[11px] font-bold tracking-[0.2em] text-white/25 uppercase">Categories</span>
-          <div className="h-px flex-1 bg-white/8" />
+          <div className="h-px flex-1 bg-[var(--bl)]" />
+          <span className="label-caps">Categories</span>
+          <div className="h-px flex-1 bg-[var(--bl)]" />
         </div>
 
         {/* OT categories */}
         <div className="mb-4">
-          <div className="text-[10px] font-bold tracking-[0.18em] text-[#c9a644]/40 uppercase mb-2 px-1">
-            Old Testament
-          </div>
+          <div className="label-caps mb-3 px-0.5">Old Testament</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {OT_CATEGORIES.map((m, i) => (
               <CategoryCard key={m.id} m={m} delay={0.4 + i * 0.05} onClick={() => startGame(m.id)} />
@@ -134,9 +137,7 @@ export default function Home() {
 
         {/* NT categories */}
         <div>
-          <div className="text-[10px] font-bold tracking-[0.18em] text-[#c9a644]/40 uppercase mb-2 px-1">
-            New Testament
-          </div>
+          <div className="label-caps mb-3 px-0.5">New Testament</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {NT_CATEGORIES.map((m, i) => (
               <CategoryCard key={m.id} m={m} delay={0.6 + i * 0.05} onClick={() => startGame(m.id)} />
@@ -150,7 +151,7 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.85 }}
-        className="text-center text-white/20 text-xs tracking-wide mt-10"
+        className="text-center text-[rgba(237,232,220,0.2)] text-[10px] tracking-widest uppercase mt-10 font-semibold"
       >
         5 rounds &middot; up to 5,000 pts per round &middot; 25,000 max
       </motion.div>
@@ -172,18 +173,18 @@ function CategoryCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      whileHover={{ y: -2, scale: 1.02 }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ y: -1 }}
+      whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className="group flex flex-col gap-1.5 p-3.5 rounded-xl border border-white/6 bg-white/[0.015] hover:border-[#c9a644]/25 hover:bg-[#c9a644]/[0.035] transition-all duration-200 text-left cursor-pointer"
+      className="group r-btn flex flex-col gap-1.5 p-3.5 text-left cursor-pointer hover:bg-[var(--bg-surface)]"
     >
-      <span className="text-[10px] font-black tracking-[0.15em] text-[#c9a644]/45 group-hover:text-[#c9a644]/70 transition-colors uppercase">
+      <span className="label-caps group-hover:text-[var(--gold)] transition-colors">
         {m.abbr}
       </span>
-      <span className="text-sm font-semibold text-white/70 group-hover:text-white/90 transition-colors leading-tight">
+      <span className="text-sm font-semibold text-[rgba(237,232,220,0.7)] group-hover:text-[rgba(237,232,220,0.9)] transition-colors leading-tight">
         {m.label}
       </span>
-      <span className="text-[10px] text-white/20 font-mono">{m.books}</span>
+      <span className="text-[10px] text-[rgba(237,232,220,0.2)] font-mono">{m.books}</span>
     </motion.button>
   );
 }

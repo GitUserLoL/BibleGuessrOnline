@@ -9,22 +9,28 @@ export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-50 bg-[#0d0b09]/90">
+    <header className="sticky top-0 z-50 bg-[var(--bg-deep)]/95 backdrop-blur-sm border-b-2 border-[var(--bl)]">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link
           href="/"
           onClick={() => setMenuOpen(false)}
-          className="font-black text-lg tracking-tight text-white hover:text-[#c9a644] transition-colors"
+          className="logo-text text-sm hover:opacity-80 transition-opacity"
         >
           BibleGuessr
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden sm:flex items-center gap-5 text-sm text-white/40">
-          <Link href="/multiplayer" className="hover:text-white/80 transition-colors">
+        <nav className="hidden sm:flex items-center gap-6 text-xs font-semibold uppercase tracking-widest">
+          <Link
+            href="/multiplayer"
+            className="text-[rgba(237,232,220,0.4)] hover:text-[rgba(237,232,220,0.85)] transition-colors"
+          >
             Multiplayer
           </Link>
-          <Link href="/leaderboard" className="hover:text-white/80 transition-colors">
+          <Link
+            href="/leaderboard"
+            className="text-[rgba(237,232,220,0.4)] hover:text-[rgba(237,232,220,0.85)] transition-colors"
+          >
             Leaderboard
           </Link>
           <AuthButton />
@@ -36,7 +42,7 @@ export default function NavBar() {
           <button
             onClick={() => setMenuOpen(o => !o)}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-white/40 hover:text-white/80 hover:bg-white/8 transition-colors"
+            className="w-8 h-8 flex items-center justify-center text-[rgba(237,232,220,0.4)] hover:text-[rgba(237,232,220,0.8)] transition-colors"
           >
             <AnimatePresence mode="wait" initial={false}>
               {menuOpen ? (
@@ -77,20 +83,20 @@ export default function NavBar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="sm:hidden overflow-hidden border-t border-white/5 bg-[#0d0b09]"
+            className="sm:hidden overflow-hidden border-t-2 border-[var(--bl)] bg-[var(--bg-deep)]"
           >
             <div className="max-w-5xl mx-auto px-4 py-1 flex flex-col">
               <Link
                 href="/multiplayer"
                 onClick={() => setMenuOpen(false)}
-                className="py-3.5 text-sm text-white/50 hover:text-white/90 transition-colors border-b border-white/5"
+                className="py-4 text-xs font-semibold uppercase tracking-widest text-[rgba(237,232,220,0.4)] hover:text-[rgba(237,232,220,0.85)] transition-colors border-b border-[var(--bl)]"
               >
                 Multiplayer
               </Link>
               <Link
                 href="/leaderboard"
                 onClick={() => setMenuOpen(false)}
-                className="py-3.5 text-sm text-white/50 hover:text-white/90 transition-colors"
+                className="py-4 text-xs font-semibold uppercase tracking-widest text-[rgba(237,232,220,0.4)] hover:text-[rgba(237,232,220,0.85)] transition-colors"
               >
                 Leaderboard
               </Link>

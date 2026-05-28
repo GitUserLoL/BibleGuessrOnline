@@ -10,7 +10,7 @@ interface Props {
 
 export default function RoundProgress({ total, current, scores }: Props) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5">
       {Array.from({ length: total }).map((_, i) => {
         const isDone = i < current;
         const isActive = i === current;
@@ -23,12 +23,12 @@ export default function RoundProgress({ total, current, scores }: Props) {
             className="flex flex-col items-center gap-1"
           >
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all duration-300 ${
+              className={`w-7 h-7 flex items-center justify-center text-xs font-bold transition-all duration-300 border-2 ${
                 isDone
-                  ? 'bg-[#c9a644] border-[#c9a644] text-[#0d0b09]'
+                  ? 'bg-[var(--gold)] border-[var(--gold-dim)] text-[#0d0b09]'
                   : isActive
-                  ? 'border-[#c9a644] text-[#c9a644] shadow-[0_0_12px_rgba(201,166,68,0.4)]'
-                  : 'border-white/20 text-white/30'
+                  ? 'bg-[var(--bg-raised)] border-[var(--gold)] text-[var(--gold)]'
+                  : 'bg-[var(--bg-card)] border-[var(--bl)] text-[rgba(237,232,220,0.25)]'
               }`}
             >
               {i + 1}
@@ -37,7 +37,7 @@ export default function RoundProgress({ total, current, scores }: Props) {
               <motion.span
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-[10px] text-[#c9a644] font-semibold"
+                className="text-[9px] text-[var(--gold)] font-bold tabular-nums"
               >
                 {scores[i].toLocaleString()}
               </motion.span>

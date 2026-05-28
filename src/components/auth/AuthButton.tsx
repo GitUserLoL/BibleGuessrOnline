@@ -61,7 +61,8 @@ export default function AuthButton() {
     return (
       <Link
         href="/auth/login"
-        className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-[#c9a644]/10 border border-[#c9a644]/25 text-[#c9a644] hover:bg-[#c9a644]/20 transition-colors"
+        className="r-btn px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-[var(--gold)] border-[var(--gold-dim)] hover:text-[var(--gold-light)]"
+        style={{ borderColor: 'var(--gold-dim)' }}
       >
         Sign in
       </Link>
@@ -75,11 +76,11 @@ export default function AuthButton() {
     <div className="relative">
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-9 h-9 rounded-full bg-[#c9a644]/10 border border-[#c9a644]/30 flex items-center justify-center hover:bg-[#c9a644]/20 transition-colors text-[#c9a644]"
+        className="w-8 h-8 r-btn flex items-center justify-center text-[var(--gold)] hover:bg-[var(--bg-surface)]"
         title={displayName}
       >
         {isIconKey(avatar) ? (
-          <AvatarIcon iconKey={avatar} size={18} />
+          <AvatarIcon iconKey={avatar} size={16} />
         ) : (
           <span className="text-xs font-black">
             {displayName[0].toUpperCase()}
@@ -94,31 +95,31 @@ export default function AuthButton() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.96 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-11 w-52 bg-[#181411] border border-white/8 rounded-xl shadow-2xl overflow-hidden z-50"
+            className="absolute right-0 top-10 w-52 r-panel shadow-2xl overflow-hidden z-50"
           >
-            <div className="px-4 py-3 border-b border-white/8 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center text-white/70 flex-shrink-0">
+            <div className="px-4 py-3 border-b border-[var(--bl)] flex items-center gap-3">
+              <div className="w-7 h-7 r-btn flex items-center justify-center text-[var(--gold)] flex-shrink-0">
                 {isIconKey(avatar) ? (
-                  <AvatarIcon iconKey={avatar} size={18} />
+                  <AvatarIcon iconKey={avatar} size={14} />
                 ) : (
-                  <span className="text-xs font-bold text-white/50">{displayName[0].toUpperCase()}</span>
+                  <span className="text-[10px] font-bold">{displayName[0].toUpperCase()}</span>
                 )}
               </div>
               <div className="min-w-0">
-                <div className="text-sm text-white font-semibold truncate">{displayName}</div>
-                <div className="text-xs text-white/35 truncate">{user.email}</div>
+                <div className="text-sm text-[#ede8dc] font-semibold truncate">{displayName}</div>
+                <div className="text-[10px] text-[rgba(237,232,220,0.35)] truncate">{user.email}</div>
               </div>
             </div>
             <Link
               href="/profile"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-3 text-sm text-white/50 hover:bg-white/8 hover:text-white/90 transition-colors"
+              className="flex items-center gap-2 px-4 py-3 text-xs font-semibold uppercase tracking-widest text-[rgba(237,232,220,0.5)] hover:bg-[var(--bg-surface)] hover:text-[rgba(237,232,220,0.9)] transition-colors"
             >
               Edit profile
             </Link>
             <button
               onClick={signOut}
-              className="w-full text-left px-4 py-3 text-sm text-white/50 hover:bg-white/8 hover:text-white/90 transition-colors border-t border-white/5"
+              className="w-full text-left px-4 py-3 text-xs font-semibold uppercase tracking-widest text-[rgba(237,232,220,0.5)] hover:bg-[var(--bg-surface)] hover:text-[rgba(237,232,220,0.9)] transition-colors border-t border-[var(--bl)]"
             >
               Sign out
             </button>
